@@ -1,0 +1,136 @@
+.mainContainer {
+    /* border: 1px solid red; */
+
+}
+
+.backBtn {
+    cursor: pointer;
+    padding: 0.3rem;
+    outline: none;
+    border: none;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+    margin-left: 1rem;
+}
+
+.backBtn img {
+    transform: rotate(180deg);
+
+}
+
+.backBtn span {
+    position: relative;
+    font-size: 1.3rem;
+    display: inline;
+    line-height: 2rem;
+    white-space: nowrap;
+}
+
+.backBtn span::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60%;
+    height: 4px;
+    border-radius: 1px;
+    background-color: var(--primary-button-bg);
+}
+
+.clientWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.avatar {
+    aspect-ratio: 1 / 1;
+    width: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--primary-button-bg);
+}
+
+.clientsContainer {
+    background-color: var(--secondary-bg-color);
+    padding: 1.5rem;
+    min-height: calc(100vh - 135px);
+}
+
+.topContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.roomTitle {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.handIcons,
+.actions {
+    font-size: 1.3rem;
+
+}
+
+.topRight,
+.btnWithIcon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn {
+    border: none;
+    background-color: #ffffff15;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    background-color: #ffffff30;
+}
+
+.clientsList {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+
+.clientWrapper h4 {
+    font-weight: 500;
+}
+
+.avatarWrapper {
+    position: relative;
+    /* border: 1px solid rgb(115, 255, 0); */
+}
+
+.muteUnmuteBtn {
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    bottom: -5px;
+    right: -8px;
+    background-color: transparent;
+    filter: drop-shadow(0px 0px 5px #0f0f0f);
+}
+
+.muteUnmuteBtn img {
+    width: 28px;
+}

@@ -1,0 +1,39 @@
+.wrapper {
+    padding: 2rem 2.5rem;
+    background: var(--secondary-bg-color);
+    backdrop-filter: blur(10px);
+
+    border-radius: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.heading {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1rem;
+
+}
+
+.heading img {
+    width: 30px;
+}
+
+.heading span {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.circle {
+    z-index: -1;
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #0077ff30;
+    border-radius: 999px;
+    box-shadow: #0077FD -1px 1px 90px 20px;
+}

@@ -1,0 +1,90 @@
+nav {
+    width: 100vw;
+    height: 70px;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 0 1.5rem;
+}
+
+.logoWrapper {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.emoji {
+    height: 40px;
+}
+
+.profileContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.avatar {
+    aspect-ratio: 1/1;
+    height: 40px;
+    border-radius: 999px;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    position: relative;
+}
+
+.menu {
+    position: absolute;
+    top: 45px;
+    right: 20px;
+    /* background: #ffffff; */
+    border-radius: 6px;
+    box-shadow: #0077ff 1px 1px 5px 1px;
+    overflow: hidden;
+    width: max-content;
+    z-index: 999;
+    background-color: #0077ff;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+}
+
+.menu button {
+    background-color: #0077ff;
+}
+.menu button:hover {
+    background: #007700;
+}
+
+.logoutBtn {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+}
+
+.profileWrapper {
+    /* border: 1px solid red; */
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.profileWrapper img {
+    width: 50px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+}

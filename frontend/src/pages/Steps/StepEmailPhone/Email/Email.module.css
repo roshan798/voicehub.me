@@ -1,0 +1,46 @@
+.cardContentWrapper {
+    /* border: 2px solid red; */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.inputBox {
+    /* border: 2px solid green; */
+    background-color: var(--input-bg-color);
+    width: 90%;
+    max-width: 300px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 10px;
+    /* height: 50px; */
+    padding: 10px;
+}
+
+.input {
+    /* border: 1px solid red; */
+    border: none;
+    width: 100%;
+    font-size: 1.4rem;
+    background-color: transparent;
+    outline: none;
+    color: #bfbfbf;
+    font-weight: 200;
+    letter-spacing: 1px;
+    background-color: var(--input-bg-color);
+}
+
+.input::placeholder {
+    color: var(--input-placeholder-text-color);
+}
+
+.termsText {
+    font-weight: 300;
+    width: 70%;
+    margin: auto;
+}

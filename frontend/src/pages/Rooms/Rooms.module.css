@@ -1,0 +1,111 @@
+.roomsContainer {
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 1.5rem;
+}
+
+.headingWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2rem;
+    /* border: 1px solid red; */
+}
+
+.headingText {
+    position: relative;
+    font-size: 1.3rem;
+    display: inline;
+    line-height: 2rem;
+    white-space: nowrap;
+    /* border: 1px solid green; */
+}
+
+.headingText::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60%;
+    height: 4px;
+    border-radius: 1px;
+    background-color: var(--primary-button-bg);
+}
+
+
+.searchBox {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background-color: var(--input-bg-color);
+    padding: 0px 1rem 0px 15px;
+    border-radius: 999px;
+    min-width: 150px;
+}
+
+.searchBox input {
+    height: 1.8rem;
+    font-size: 1.2rem;
+    margin: auto;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    color: var(--secondary-text-color);
+    max-width: 300px;
+    width: 100%;
+    margin-right: 2rem;
+}
+
+.searchBox label {
+    display: flex;
+    align-items: center;
+}
+
+.searchIcon,
+.startRoomBtn img {
+    height: 25px;
+    width: 25px;
+    margin-top: 6px;
+}
+
+.startRoomBtn img {
+    margin-top: 0;
+    margin-bottom: 2px;
+}
+
+.startRoomBtn {
+    background-color: var(--success);
+    height: 2.5rem;
+    padding: 0px 1.2rem;
+    white-space: nowrap;
+    width: max-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: none;
+    gap: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+
+}
+
+.startRoomBtn:hover {
+    background-color: #19660f;
+}
+
+
+/*card styles starts from here*/
+.roomsCardsWrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    /* border: 1px solid red; */
+    margin-top: 2rem;
+}

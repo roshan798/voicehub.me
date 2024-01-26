@@ -1,0 +1,22 @@
+.tabWrapper {
+    /* border: 1px solid yellowgreen; */
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+.tabWrapper button {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    display: grid;
+    place-items: center;
+    background: var(--secondary-bg-color);
+    cursor: pointer;
+}
+.tabWrapper button.active {
+    background-color: var(--primary-button-bg);
+    cursor:default;
+}

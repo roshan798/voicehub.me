@@ -1,0 +1,139 @@
+.modalMask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(1px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardBody {
+    background-color: #1d1d1d;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+    width: 50%;
+    max-width: 500px;
+    min-width: 400px;
+    overflow: hidden;
+    padding-top: 2rem;
+}
+
+
+.modalHeader,
+.modalFooter {
+    padding: 1.5rem 2rem;
+}
+
+.modalFooter {
+    border-top: 1px solid #0005;
+}
+
+.modalHeader h3,
+.typesContainer h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.inputBox {
+    background-color: var(--input-bg-color);
+    border-radius: 10px;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    font-size: 1.2rem;
+    margin: auto;
+    outline: none;
+    color: #bfbfbf;
+    font-weight: 200;
+    letter-spacing: 1px;
+    margin-top: 8px;
+    border: 1px solid rgb(0, 0, 0, 0.5);
+}
+
+.typesContainer {
+    margin-top: 1.2rem;
+}
+
+.types {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.type {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border-radius: 15px;
+    cursor: pointer;
+    padding: 1rem;
+    padding-top: 1.1rem;
+    width: 100%;
+}
+
+.type:hover,
+.cross:hover {
+    background: var(--primary-bg-color);
+}
+
+.type img {
+    aspect-ratio: 1 /1;
+    width: 80px;
+}
+
+.type p {
+    font-size: 1.1rem;
+}
+
+.selected {
+    background: var(--primary-bg-color);
+}
+
+.modalFooter {
+    text-align: center;
+}
+
+.btn {
+    background: var(--success);
+    padding: 0.6rem 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 999px;
+    width: fit-content;
+    cursor: pointer;
+    color: #fff;
+    border: none;
+    letter-spacing: 0.8px;
+    font-size: 1.1rem;
+    margin: 1.2rem auto;
+}
+
+.btn:hover {
+    background-color: #19660f;
+}
+
+.btn img {
+    margin-bottom: 4px;
+    width: 22px;
+}
+
+.cross {
+    padding: 0.8rem 1rem;
+    display: inline;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-bottom-left-radius: 15px;
+    cursor: pointer;
+}

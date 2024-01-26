@@ -1,0 +1,44 @@
+.text {
+    color: white;
+}
+
+.inputBox {
+    /* border: 2px solid green; */
+    background-color: var(--input-bg-color);
+    width: 90%;
+    max-width: 300px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 10px;
+    /* height: 50px; */
+    padding: 10px;
+    margin: 1rem auto;
+}
+
+.input {
+    /* border: 1px solid red; */
+    border: none;
+    width: 100%;
+    font-size: 1.4rem;
+    background-color: transparent;
+    outline: none;
+    color: #bfbfbf;
+    font-weight: 200;
+    letter-spacing: 1px;
+    background-color: var(--input-bg-color);
+}
+
+.input::placeholder {
+    color: var(--input-placeholder-text-color);
+}
+
+.termsText {
+    /* margin-top: 1rem; */
+    font-weight: 300;
+    color: rgb(200, 200, 200);
+    width: 80%;
+    margin: auto;
+}

@@ -1,0 +1,21 @@
+.cardContentWrapper {
+    composes: cardContentWrapper from "../StepEmailPhone/Email/Email.module.css";
+}
+
+/* .inputBox {
+    composes: inputBox from "../StepEmailPhone/Email/Email.module.css";
+
+} */
+
+.input {
+    composes: input from "../StepEmailPhone/Email/Email.module.css";
+}
+
+.input::placeholder {
+    color: var(--input-placeholder-text-color);
+}
+
+
+.termsText {
+    composes: termsText from "../StepEmailPhone/Email/Email.module.css";
+}
