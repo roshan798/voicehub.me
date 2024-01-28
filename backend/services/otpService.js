@@ -50,7 +50,6 @@ class OtpService {
     verifyOtp(data, hash) {
         const computedHash = HashService.hashOtp(data);
         const res = (computedHash === hash);
-        // console.log("inside otpService  matching=> ",res);
         return res;
     }
 }

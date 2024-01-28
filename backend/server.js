@@ -11,7 +11,7 @@ import http from 'http';
 
 const PORT = process.env.PORT || 8080;
 const app = express();
-const server = http.createServer(app); // Use http.createServer
+const server = http.createServer(app);
 
 // for socket
 const io = new Server(server, {
@@ -31,7 +31,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use('/storage', express.static('storage'));
-app.use(express.json({ limit: '8mb' }));
+app.use(express.json({ limit: '4mb' }));
 
 // Sockets
 const socketUserMapping = {}
@@ -121,8 +121,7 @@ io.on('connection', (socket) => {
     });
 });
 
-app.use(router); // Place routes after all other middleware
-
+app.use(router);
 router.get('/', (req, res) => {
     res.json({
         msg: 'Welcome to coders house',

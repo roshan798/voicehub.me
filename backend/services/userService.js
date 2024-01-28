@@ -20,7 +20,6 @@ class UserService {
     }
 
     async updateUserProfile(userId, updatedData) {
-        // console.log("userId,",updatedData);
         try {
             const user = await UserModel.findById(userId);
             if (!user) {
