@@ -23,6 +23,7 @@ export default function Phone({ onNext }) {
             setOtp({
                 sender,
                 hash,
+                type : "phone"
             })
         );
         setLoading(false);

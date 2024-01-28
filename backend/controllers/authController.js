@@ -177,24 +177,30 @@ class authController {
     }
 
 
-    // LOOK HERE
     updateProfile = async (req, res) => {
-        const {user} = req.body;
-        console.log("user", user);
-        try {
-            const updatedUser = await userService.updateUser(user.id, data);
-            const userDto = new UserDto(updatedUser);
-            res.json({
-                user: userDto,
-                auth: true,
-            });
-        } catch (error) {
-            res.status(500).json({
-                message: "Unable to update user",
-                error,
-            });
+        const { id: userId, changes, } = req.body;
+        const { avatar, avatarChanged, previousAvatar } = changes;
+        const updatedData = {};
+        if (avatarChanged) {
+            const imagePath = await userService.setAvatar(avatar, avatarChanged, previousAvatar);
+            updatedData.avatar = `/storage/${imagePath}`;
         }
+        if (changes.name) {
+            updatedData.name = changes.name;
+        }
+        if (changes.email) {
+            updatedData.email = changes.email;
+        }
+        if (changes.phone) {
+            updatedData.phone = changes.phone;
+        }   
+
+        const user = await userService.updateUserProfile(userId, updatedData);
+        const userDto = new UserDto(user);
+        res.json({user : userDto});
+
     }
+
 
     async logout(req, res) {
         const { refreshToken } = req.cookies;

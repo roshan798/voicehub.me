@@ -12,11 +12,9 @@ export default function StepName({ onNext }) {
     });
     const [fullName, setFullName] = useState(name);
     const dispatch = useDispatch();
-    console.log("Step name page");
     const nextStep = () => {
         if (!fullName) return;
         dispatch(setName(fullName));
-        console.log("clicked");
         onNext();
     };
 

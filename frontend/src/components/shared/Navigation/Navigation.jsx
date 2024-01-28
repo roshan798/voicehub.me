@@ -10,7 +10,6 @@ import { useRef } from "react";
 const ProfileSection = ({ logoutUser, user }) => {
     const modalRef = useRef();
     const toggleModal = () => {
-        console.log("object");
         modalRef.current.classList.toggle("hidden");
     };
     return (
@@ -18,7 +17,6 @@ const ProfileSection = ({ logoutUser, user }) => {
             <div className={styles.right}>
                 <div className={styles.profileContainer}>
                     <div className={styles.right}>
-                        <span onClick={toggleModal}>{user.name}</span>
                         <img
                             src={user.avatar}
                             alt="user-avatar"
@@ -29,13 +27,15 @@ const ProfileSection = ({ logoutUser, user }) => {
                             className={`${styles.menu} hidden`}
                             ref={modalRef}>
                             <li>
-                                <div className={styles.profileWrapper}>
+                                <Link
+                                    to="/profile"
+                                    className={styles.profileWrapper}>
                                     <img
                                         src={user.avatar}
                                         alt={user.name}
                                     />
                                     <p className="name">{user.name}</p>
-                                </div>
+                                </Link>
                             </li>
                             <li>
                                 <button

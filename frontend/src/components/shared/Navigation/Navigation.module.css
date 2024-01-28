@@ -48,21 +48,23 @@ nav {
     position: absolute;
     top: 45px;
     right: 20px;
-    /* background: #ffffff; */
     border-radius: 6px;
-    box-shadow: #0077ff 1px 1px 5px 1px;
+    box-shadow: #585858 1px 1px 5px 1px;
     overflow: hidden;
     width: max-content;
     z-index: 999;
     background-color: #0077ff;
+    background-color: var(--secondary-bg-color);
+    backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     padding: 10px;
 }
 
 .menu button {
-    background-color: #0077ff;
+    border-radius: 10px;
+    background-color: #39506b;
 }
 .menu button:hover {
     background: #007700;
@@ -76,7 +78,6 @@ nav {
 }
 
 .profileWrapper {
-    /* border: 1px solid red; */
     display: flex;
     gap: 10px;
     justify-content: center;
@@ -84,7 +85,7 @@ nav {
 }
 
 .profileWrapper img {
-    width: 50px;
+    width: 46px;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
 }

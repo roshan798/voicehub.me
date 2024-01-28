@@ -28,14 +28,12 @@ export default function StepOtp() {
                 type,
             });
             if (res) {
-                console.log("respone =>>", res);
                 const { data } = res;
                 dispatch(setAuth({ data }));
             }
             navigate("/activate");
         } catch (error) {
             const { data } = error.response;
-            console.log("insedie step otp catch", data);
             setError(data?.message);
         }
         setOtp(["", "", "", ""]);

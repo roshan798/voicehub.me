@@ -9,6 +9,7 @@ import Activate from "./pages/Activate/Activate.jsx";
 import { useSelector } from "react-redux";
 import { useLaodingWithRefresh } from "./hooks/useLoadingWithRefresh.js";
 import Loader from "./components/shared/Loader/Loader.jsx";
+import Profile from "./pages/profile/Profile.jsx";
 function App() {
     const { isAuth, user } = useSelector((state) => {
         return state.authSlice;
@@ -72,6 +73,21 @@ function App() {
                         isAuth == true ? (
                             user.activated == true ? (
                                 <Room />
+                            ) : (
+                                <Navigate to={"/activate"} />
+                            )
+                        ) : (
+                            <Navigate to={"/"} />
+                        )
+                    }
+                />
+                <Route
+                    exact
+                    path="/profile"
+                    element={
+                        isAuth == true ? (
+                            user.activated == true ? (
+                                <Profile />
                             ) : (
                                 <Navigate to={"/activate"} />
                             )

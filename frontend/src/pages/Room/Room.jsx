@@ -19,14 +19,12 @@ export default function Room() {
     };
 
     const handleMuteClick = (clientId, clientMute) => {
-        // console.log("unmute", clientMute, isMute);
         if (clientId != user.id) return;
         setMute((isMuted) => !isMuted);
     };
 
     useEffect(() => {
         handleMute(isMute, user.id);
-        console.log("djobject");
     }, [isMute]);
 
     useEffect(() => {

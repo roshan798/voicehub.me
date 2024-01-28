@@ -25,9 +25,10 @@ export const authSlice = createSlice({
 
         },
         setOtp: (state, action) => {
-            const { hash, sender } = action.payload;
+            const { hash, sender, type } = action.payload;
             state.otp.sender = sender;
             state.otp.hash = hash;
+            state.otp.type = type;
         },
     },
 })

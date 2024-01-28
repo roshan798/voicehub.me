@@ -18,7 +18,6 @@ export default function Email({ onNext }) {
     };
     async function submitHandler() {
         setLoading(true);
-        // step 1 : email validation
         const email = emailRef.current.value;
         if (validateEmail(email) === false) {
             setLoading(false);
@@ -35,6 +34,7 @@ export default function Email({ onNext }) {
             setOtp({
                 sender,
                 hash,
+                type : "email"
             })
         );
         setLoading(false);

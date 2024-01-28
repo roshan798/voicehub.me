@@ -35,7 +35,6 @@ export default function StepAvatar() {
                 const data = { ...resp.data };
                 dispatch(setAuth({ data: data }));
             }
-            // console.log(data);
         } catch (error) {
             console.log(error);
         } finally {
