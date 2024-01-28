@@ -74,7 +74,7 @@ export default function Navigation() {
                         alt=""
                         className={styles.emoji}
                     />
-                    <span>Coders House</span>
+                    <span>Voicehub</span>
                 </Link>
                 {isAuth === true && user != null && (
                     <ProfileSection
