@@ -4,13 +4,17 @@
     backdrop-filter: blur(10px);
     border-radius: 20px;
     text-align: center;
-    /* position: relative; */
+    box-shadow: rgb(0 0 0 / 50%) 0px 3px 8px;
     overflow: hidden;
     max-width: 500px;
     text-align: left;
     cursor: pointer;
     display: flex;
     gap: 1rem;
+}
+
+.card:hover {
+    box-shadow: rgb(0 0 0 / 50%) 0px 20px 30px -10px;
 }
 
 .card img {
@@ -69,19 +73,19 @@
 
 .avatarContainer img {
     aspect-ratio: 1/1;
-    width: 45px;
+    width: 46px;
     border-radius: 50%;
     object-fit: cover;
     position: absolute;
-    border: 2px solid;
+    border: 3px solid white !important;
 }
 
 .avatarContainer img:nth-child(1) {
-    border-color: var(--success);
+    box-shadow: var(--success) 0px 0px 0px 3px;
 }
 
 .avatarContainer img:nth-child(2) {
-    border-color: var(--primary-button-bg);
+    box-shadow: var(--primary-button-bg) 0px 0px 0px 3px;
     top: 22px;
     left: 22px;
 }

@@ -31,7 +31,6 @@ nav {
 }
 
 .avatar {
-    aspect-ratio: 1/1;
     height: 40px;
     border-radius: 999px;
 }
@@ -64,10 +63,10 @@ nav {
 
 .menu button {
     border-radius: 10px;
-    background-color: #39506b;
+    background-color: var(--primary-bg-color);
 }
 .menu button:hover {
-    background: #007700;
+    background: var(--primary-button-bg);
 }
 
 .logoutBtn {
@@ -86,6 +85,5 @@ nav {
 
 .profileWrapper img {
     width: 46px;
-    aspect-ratio: 1 / 1;
     border-radius: 50%;
 }

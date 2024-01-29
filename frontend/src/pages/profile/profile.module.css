@@ -76,6 +76,7 @@
     letter-spacing: 1px;
     cursor: pointer;
     border: 1px solid transparent;
+    margin-top: 1rem;
 }
 
 .btn:hover {

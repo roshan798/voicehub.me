@@ -16,36 +16,39 @@ const ProfileSection = ({ logoutUser, user }) => {
         <>
             <div className={styles.right}>
                 <div className={styles.profileContainer}>
-                    <div className={styles.right}>
-                        <img
-                            src={user.avatar}
-                            alt="user-avatar"
-                            className={styles.avatar}
-                            onClick={toggleModal}
-                        />
-                        <ul
-                            className={`${styles.menu} hidden`}
-                            ref={modalRef}>
-                            <li>
-                                <Link
-                                    to="/profile"
-                                    className={styles.profileWrapper}>
-                                    <img
-                                        src={user.avatar}
-                                        alt={user.name}
-                                    />
-                                    <p className="name">{user.name}</p>
-                                </Link>
-                            </li>
-                            <li>
-                                <button
-                                    className={styles.logoutBtn}
-                                    onClick={logoutUser}>
-                                    Log out
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
+                    {user.activated && (
+                        <div className={styles.right}>
+                            <img
+                                src={user.avatar}
+                                alt="user-avatar"
+                                className={styles.avatar}
+                                onClick={toggleModal}
+                            />
+                            <ul
+                                className={`${styles.menu} hidden`}
+                                ref={modalRef}>
+                                <li>
+                                    <Link
+                                        to="/profile"
+                                        className={styles.profileWrapper}
+                                        onClick={toggleModal}>
+                                        <img
+                                            src={user.avatar}
+                                            alt={user.name}
+                                        />
+                                        <p className="name">{user.name}</p>
+                                    </Link>
+                                </li>
+                                <li>
+                                    <button
+                                        className={`${styles.logoutBtn} transition`}
+                                        onClick={logoutUser}>
+                                        Log out
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
         </>

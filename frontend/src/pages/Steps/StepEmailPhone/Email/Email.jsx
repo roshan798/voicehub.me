@@ -5,6 +5,7 @@ import Button from "../../../../components/shared/CardButton/Button.jsx";
 import { sendOtp } from "../../../../http/index.js";
 import { setOtp } from "../../../../store/authSlice.js";
 import { useDispatch } from "react-redux";
+import showToastMessage from "../../../../utils/showToastMessage.js"
 export default function Email({ onNext }) {
     const dispath = useDispatch();
     const emailRef = useRef(null);
@@ -20,6 +21,7 @@ export default function Email({ onNext }) {
         setLoading(true);
         const email = emailRef.current.value;
         if (validateEmail(email) === false) {
+            showToastMessage("warning", "Enter a valid email!", "dark");
             setLoading(false);
             return;
         }
@@ -30,6 +32,9 @@ export default function Email({ onNext }) {
             sender: email,
         });
         const { hash, sender } = response.data;
+        // REMOVE IT
+        const otp = response.data.otp;
+        alert(`Your OTP is ${otp}`);
         dispath(
             setOtp({
                 sender,

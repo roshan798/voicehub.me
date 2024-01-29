@@ -2,7 +2,6 @@
     padding: 2rem 2.5rem;
     background: var(--secondary-bg-color);
     backdrop-filter: blur(10px);
-
     border-radius: 20px;
     text-align: center;
     position: relative;

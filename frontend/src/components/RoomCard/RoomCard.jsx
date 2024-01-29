@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
 import styles from "./RoomCard.module.css";
 import chatIcon from "../../assets/Images/chatIcon.png";
 import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
@@ -10,7 +9,7 @@ export default function RoomCard({ roomId, title, speakers }) {
     return (
         <>
             <div
-                className={styles.card}
+                className={`${styles.card} transition`}
                 onClick={() => {
                     navigate(`/room/${roomId}`);
                 }}>

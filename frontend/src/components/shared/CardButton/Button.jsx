@@ -4,6 +4,7 @@ import arrowForward from "../../../assets/Images/Arrow forward.png";
 export default function Button({ text, onClick, disabled, loading }) {
     return (
         <button
+            id="nxt-btn"
             className={`${styles.btn} transition`}
             onClick={onClick}
             disabled={disabled}>

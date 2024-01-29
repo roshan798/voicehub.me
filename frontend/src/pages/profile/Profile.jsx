@@ -4,14 +4,13 @@ import { useState } from "react";
 import { updateProfile } from "../../http";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../store/authSlice";
-
+import showToastMessage from "../../utils/showToastMessage.js";
 const Profile = () => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.authSlice);
     const [userDetails, setUserDetails] = useState(user);
-    console.log(userDetails);
     const handleUpdateDetail = async () => {
-        const { id, name, email, avatar } = userDetails;
+        const { name, email, avatar } = userDetails;
         const {
             id: userId,
             name: userName,
@@ -20,10 +19,8 @@ const Profile = () => {
         } = user;
 
         if (name === userName && email === userEmail && avatar === userAvatar) {
-            console.log("No changes found.");
             return;
         } else {
-            console.log("Changes found.");
             const updatedUser = {
                 id: userId,
                 changes: {
@@ -38,8 +35,10 @@ const Profile = () => {
 
             try {
                 const { data } = await updateProfile(updatedUser);
+                showToastMessage("success", "Profile updated!", "dark");
                 dispatch(setAuth({ data: data }));
             } catch (error) {
+                showToastMessage("error", error.message, "dark");
                 console.log(error);
             }
         }
@@ -48,9 +47,9 @@ const Profile = () => {
         try {
             const file = e.target.files[0];
             const fileSizeKB = Math.round(file.size / 1024); // Convert file size to KB
-            console.log(fileSizeKB + " KB");
             if (fileSizeKB > 1024) {
-                alert("File size should be less than 1MB");
+                // alert("File size should be less than 1MB");
+                showToastMessage("warning", "File size should be less than 1MB", "dark")
                 return;
             }
             if (file instanceof Blob) {
@@ -60,7 +59,7 @@ const Profile = () => {
                     setUserDetails((detail) => ({
                         ...detail,
                         avatar: reader.result,
-                        imageSize: fileSizeKB, // Add the image size in KB to userDetails
+                        imageSize: fileSizeKB, 
                     }));
                 };
             } else {
@@ -110,7 +109,7 @@ const Profile = () => {
                         }}
                     />
                 </label>
-                {!user.email && <label
+                <label
                     htmlFor="email"
                     className={styles.inputBox}>
                     Email
@@ -125,8 +124,28 @@ const Profile = () => {
                                 email: e.target.value,
                             });
                         }}
+                        disabled={user.email ? true : false}
                     />
-                </label> }
+                </label>
+                <label
+                    htmlFor="phone"
+                    className={styles.inputBox}>
+                    Phone
+                    <input
+                        id="phone"
+                        type="text"
+                        className={styles.input}
+                        value={userDetails?.phone}
+                        onChange={(e) => {
+                            setUserDetails({
+                                ...userDetails,
+                                phone: e.target.value,
+                            });
+                        }}
+                        disabled={user.phone ? true : false}
+                    />
+                </label>
+
                 <button
                     className={`${styles.btn} transition`}
                     onClick={handleUpdateDetail}>

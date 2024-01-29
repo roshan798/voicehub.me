@@ -17,7 +17,9 @@ export default function Phone({ onNext }) {
             type: "phone",
             sender: number,
         });
-        console.log(response.data.otp);
+        // console.log(response.data.otp);
+        // REMOVE THIS after opt in for the OTP service
+        alert(`Your OTP is ${response.data.otp}`);
         const { hash, sender } = response.data;
         dispath(
             setOtp({

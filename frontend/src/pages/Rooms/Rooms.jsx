@@ -14,7 +14,6 @@ export default function Rooms() {
         const fetchRooms = async () => {
             const { data } = await getAllRooms();
             setRooms(data.allRooms);
-            console.log(data);
         };
         fetchRooms();
     }, []);

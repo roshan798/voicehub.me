@@ -8,13 +8,14 @@ import { verifyOtp } from "../../../http/index.js";
 import { useSelector, useDispatch } from "react-redux";
 import { setAuth } from "../../../store/authSlice.js";
 
+import showToastMessage from "../../../utils/showToastMessage.js";
+
 import OtpInputs from "./OtpInputs.jsx";
 
 export default function StepOtp() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [otp, setOtp] = useState(["", "", "", ""]);
-    const [error, setError] = useState(null);
     const { sender, hash, type } = useSelector((state) => {
         return state.authSlice.otp;
     });
@@ -34,9 +35,10 @@ export default function StepOtp() {
             navigate("/activate");
         } catch (error) {
             const { data } = error.response;
-            setError(data?.message);
+            showToastMessage("error", data?.message, "dark");
+        } finally {
+            setOtp(["", "", "", ""]);
         }
-        setOtp(["", "", "", ""]);
     };
     return (
         <div className="card-wrapper">
@@ -47,8 +49,6 @@ export default function StepOtp() {
                     <OtpInputs
                         otp={otp}
                         setOtp={setOtp}
-                        error={error}
-                        setError={setError}
                     />
 
                     <Button

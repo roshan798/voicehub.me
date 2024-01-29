@@ -7,6 +7,7 @@ import ArrowForward from "../../assets/Images/Arrow forward.png";
 import muteIcon from "../../assets/Images/mute.png";
 import unmuteIcon from "../../assets/Images/unmute.png";
 import styles from "./Room.module.css";
+
 export default function Room() {
     const navigate = useNavigate();
     const { roomId } = useParams();
@@ -54,14 +55,16 @@ export default function Room() {
                         {room?.topic}
                     </div>
                     <div className={`${styles.topRight} ${styles.actions}`}>
-                        <button className={`${styles.btn} transition`}>
+                        <button
+                            className={`${styles.btn} transition`}
+                            disabled>
                             <span className={styles.handIcons}>✋</span>
                         </button>
                         <button
                             onClick={handleManualLeave}
                             className={`${styles.btnWithIcon} ${styles.btn} transition`}>
                             <span className={styles.handIcons}>✌️</span>
-                            <span>Leave quitly</span>
+                            <span>Leave quitely</span>
                         </button>
                     </div>
                 </div>
@@ -71,8 +74,20 @@ export default function Room() {
                               return (
                                   <div
                                       key={client.id}
-                                      className={styles.clientWrapper}>
-                                      <div className={styles.avatarWrapper}>
+                                      className={`${styles.clientWrapper} ${
+                                          room.ownerId == client.id
+                                              ? styles.owner
+                                              : ""
+                                      }`}>
+                                     
+                                      <div
+                                          className={styles.avatarWrapper}
+                                          onClick={() => {
+                                              handleMuteClick(
+                                                  client.id,
+                                                  client.muted
+                                              );
+                                          }}>
                                           <img
                                               src={client.avatar}
                                               alt={`${client.name} avatar`}
@@ -82,14 +97,7 @@ export default function Room() {
                                               <button
                                                   className={
                                                       styles.muteUnmuteBtn
-                                                  }
-                                                  onClick={() => {
-                                                      handleMuteClick(
-                                                          client.id,
-                                                          client.muted
-                                                      );
-                                                  }}>
-                                                  {/*place the mute and unmute here */}
+                                                  }>
                                                   <img
                                                       src={muteIcon}
                                                       alt=""
@@ -100,13 +108,7 @@ export default function Room() {
                                               <button
                                                   className={
                                                       styles.muteUnmuteBtn
-                                                  }
-                                                  onClick={() => {
-                                                      handleMuteClick(
-                                                          client.id,
-                                                          client.muted
-                                                      );
-                                                  }}>
+                                                  }>
                                                   <img
                                                       src={unmuteIcon}
                                                       alt=""
@@ -120,8 +122,7 @@ export default function Room() {
                                               provideRef(instance, client.id);
                                           }}
                                       />
-
-                                      <h4>{client.name}</h4>
+                                      <h4>{client.name.split(" ")[0]}</h4>
                                   </div>
                               );
                           })

@@ -10,6 +10,8 @@ import { useSelector } from "react-redux";
 import { useLaodingWithRefresh } from "./hooks/useLoadingWithRefresh.js";
 import Loader from "./components/shared/Loader/Loader.jsx";
 import Profile from "./pages/profile/Profile.jsx";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
     const { isAuth, user } = useSelector((state) => {
         return state.authSlice;
@@ -20,6 +22,8 @@ function App() {
     }
     return (
         <>
+            <ToastContainer />
+
             <Navigation />
             <Routes>
                 <Route
