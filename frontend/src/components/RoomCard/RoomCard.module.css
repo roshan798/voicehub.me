@@ -4,7 +4,7 @@
     backdrop-filter: blur(10px);
     border-radius: 20px;
     text-align: center;
-    box-shadow: rgb(0 0 0 / 50%) 0px 3px 8px;
+    box-shadow: rgb(0 0 0 / 50%) 0px 1px 8px;
     overflow: hidden;
     max-width: 500px;
     text-align: left;
@@ -14,7 +14,7 @@
 }
 
 .card:hover {
-    box-shadow: rgb(0 0 0 / 50%) 0px 20px 30px -10px;
+    box-shadow: rgb(0 0 0 / 100%) 0px 20px 30px -10px;
 }
 
 .card img {
