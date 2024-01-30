@@ -13,9 +13,9 @@ export default function Home() {
         <div className="card-wrapper">
             <Card
                 emoji={emoji}
-                title="Welcome to voivehub">
+                title="Welcome to voicehub">
                 <p className={styles.text}>
-                    We're working hard to get a coder's house ready for
+                    We're working hard to get a voicehub ready for
                     everyone! While we wrap up the finishing touches, we're
                     adding people gradually to make sure nothing breaks :)
                 </p>

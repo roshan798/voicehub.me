@@ -32,7 +32,9 @@ nav {
 
 .avatar {
     height: 40px;
+    aspect-ratio: 1 / 1;
     border-radius: 999px;
+    border: 1px solid white;
 }
 
 .right {
@@ -85,5 +87,6 @@ nav {
 
 .profileWrapper img {
     width: 46px;
+     aspect-ratio: 1 / 1;
     border-radius: 50%;
 }
