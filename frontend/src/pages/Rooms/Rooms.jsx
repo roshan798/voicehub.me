@@ -61,6 +61,7 @@ export default function Rooms() {
                                     title={room.topic}
                                     speakers={room.speakers}
                                     key={index}
+                                    ownerId={room.ownerId}
                                 />
                             );
                         })

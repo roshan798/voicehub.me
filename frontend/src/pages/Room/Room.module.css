@@ -45,7 +45,7 @@
 
 .avatar {
     aspect-ratio: 1 / 1;
-    width: 60px;
+    width: 100px;
     object-fit: cover;
     border-radius: 50%;
     border: 2px solid var(--primary-button-bg);

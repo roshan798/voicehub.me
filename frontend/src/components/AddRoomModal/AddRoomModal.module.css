@@ -5,7 +5,7 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(1px);
+    backdrop-filter: blur(5px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -80,8 +80,7 @@
     width: 100%;
 }
 
-.type:hover,
-.cross:hover {
+.type:hover {
     background: var(--primary-bg-color);
 }
 
@@ -133,7 +132,8 @@
     display: inline;
     position: absolute;
     top: 0;
-    right: 0;
+    right: -1px;
     border-bottom-left-radius: 15px;
     cursor: pointer;
+    background: var(--primary-bg-color);
 }

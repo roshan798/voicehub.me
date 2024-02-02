@@ -52,7 +52,7 @@ export default function Email({ onNext }) {
                 <input
                     type="email"
                     className={styles.input}
-                    placeholder="johndoe@gmail.com"
+                    placeholder="Enter your email"
                     id="email"
                     autoComplete="email"
                     ref={emailRef}

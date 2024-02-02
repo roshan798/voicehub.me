@@ -13,7 +13,7 @@ export default function Home() {
         <div className="card-wrapper">
             <Card
                 emoji={emoji}
-                title="Welcome to voicehub">
+                title="Welcome to Voicehub">
                 <p className={styles.text}>
                     We're working hard to get a voicehub ready for
                     everyone! While we wrap up the finishing touches, we're

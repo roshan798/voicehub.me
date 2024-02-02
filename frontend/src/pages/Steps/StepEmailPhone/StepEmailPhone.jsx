@@ -35,7 +35,7 @@ export default function stepEmailPhone({ onNext }) {
                 </button>
             </div>
             <Card
-                title="Welcome to Coder’s House"
+                title="Welcome to Voicehub"
                 emoji={component[currentType].emoji}>
                 <Component onNext={onNext} />
                 

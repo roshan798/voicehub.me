@@ -223,7 +223,7 @@ export function useWebRTC(roomId, user) {
 					track.stop();
 				});
 			}
-			socket.current.emit(ACTIONS.LEAVE, { roomId });
+			socket.current.emit(ACTIONS.LEAVE, { roomId, userId: user.id });
 		};
 	}, [addNewClient, roomId, user]);
 

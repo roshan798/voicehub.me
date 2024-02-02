@@ -8,6 +8,7 @@ import connectDB from './database.js';
 import { Server } from 'socket.io';
 import { ACTIONS } from './actions.js';
 import http from 'http';
+import RoomService from './services/roomService.js';
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -39,8 +40,9 @@ io.on('connection', (socket) => {
 
     socket.on(ACTIONS.JOIN, ({ roomId, user }) => {
         socketUserMapping[socket.id] = user;
+        // console.log("JOIN",user);
         const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
-
+        RoomService.addUserToRoom(roomId, user.id)
         clients.forEach((clientId) => {
 
             io.to(clientId).emit(ACTIONS.ADD_PEER,
@@ -96,7 +98,7 @@ io.on('connection', (socket) => {
         })
 
         // handle remove peer
-        const leaveRoom = ({ roomId }) => {
+        const leaveRoom = ({ roomId,userId }) => {
             const { rooms } = socket;
             Array.from(rooms).forEach(roomId => {
                 const clients = Array.from(io.sockets.adapter.rooms.get(roomId));
@@ -113,7 +115,7 @@ io.on('connection', (socket) => {
                 })
                 socket.leave(roomId)
             });
-
+            RoomService.removeUserFromRoom(roomId, user.id);
             delete socketUserMapping[socket.id];
         };
         socket.on(ACTIONS.LEAVE, leaveRoom);

@@ -14,7 +14,6 @@ export function useLaodingWithRefresh() {
                     {
                         withCredentials: true,
                     });
-                // console.log(data);
                 dispatch(setAuth({ data: data }))
                 setLoading(false);
             } catch (error) {

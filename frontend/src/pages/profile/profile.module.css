@@ -1,4 +1,5 @@
 .wrapper {
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
     padding: 2rem;
 }
 
@@ -108,4 +109,11 @@
     cursor: pointer;
     margin: 0.5rem auto;
     display: inline-block;
+}
+
+.backBtn {
+    composes: backBtn from "../Room/Room.module.css";
+    margin-left: -18px;
+    margin-top: -20px;
+    width: fit-content;
 }

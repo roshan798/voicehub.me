@@ -20,7 +20,7 @@ nav {
 }
 
 .emoji {
-    height: 40px;
+    height: 36px;
 }
 
 .profileContainer {
@@ -34,7 +34,6 @@ nav {
     height: 40px;
     aspect-ratio: 1 / 1;
     border-radius: 999px;
-    border: 1px solid white;
 }
 
 .right {
@@ -68,7 +67,7 @@ nav {
     background-color: var(--primary-bg-color);
 }
 .menu button:hover {
-    background: var(--primary-button-bg);
+    background: var(--error);
 }
 
 .logoutBtn {

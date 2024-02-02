@@ -1,5 +1,4 @@
 .tabWrapper {
-    /* border: 1px solid yellowgreen; */
     display: flex;
     justify-content: flex-end;
     gap: 10px;
@@ -15,6 +14,11 @@
     place-items: center;
     background: var(--secondary-bg-color);
     cursor: pointer;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 38%),
+        0 2px 2px rgba(0, 0, 0, 0.40),
+        0 4px 4px rgba(0, 0, 0, 0.40),
+        0 8px 8px rgba(0, 0, 0, 0.40),
+        0 16px 16px rgba(0, 0, 0, 0.40);
 }
 .tabWrapper button.active {
     background-color: var(--primary-button-bg);

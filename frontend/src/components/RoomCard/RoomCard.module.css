@@ -115,6 +115,7 @@
 .kababMenuIcon {
     filter: invert();
     width: 20px !important;
+    display: none;
 }
 
 .modal {
