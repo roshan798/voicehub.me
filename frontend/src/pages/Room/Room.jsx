@@ -55,11 +55,11 @@ export default function Room() {
                         {room?.topic}
                     </div>
                     <div className={`${styles.topRight} ${styles.actions}`}>
-                        <button
+                        {/* <button
                             className={`${styles.btn} transition`}
                             disabled>
                             <span className={styles.handIcons}>✋</span>
-                        </button>
+                        </button> */}
                         <button
                             onClick={handleManualLeave}
                             className={`${styles.btnWithIcon} ${styles.btn} transition`}>

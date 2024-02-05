@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import logo from "../../../assets/Images/Emoji.png";
+import logoutIcon from "../../../assets/Images/exit.png";
 import styles from "./Navigation.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuth } from "../../../store/authSlice.js";
@@ -43,6 +44,7 @@ const ProfileSection = ({ logoutUser, user }) => {
                                     <button
                                         className={`${styles.logoutBtn} transition`}
                                         onClick={logoutUser}>
+                                            <img src={logoutIcon} className="transition"/>
                                         Log out
                                     </button>
                                 </li>

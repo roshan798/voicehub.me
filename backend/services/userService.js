@@ -35,7 +35,7 @@ class UserService {
 
     async setAvatar(avatar, avatarChanged, previousAvatar) {
         let imagePath = "default.png";
-        if (avatar !== '/src/assets/Images/avatar.jpeg') {
+        if (avatar !== '/src/assets/Images/avatar.png') {
             const buffer = Buffer.from(avatar.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''), 'base64');
             imagePath = `${Date.now()}-${Math.round(
                 Math.random() * 1e9

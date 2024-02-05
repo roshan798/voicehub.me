@@ -12,7 +12,7 @@ const userSchema = new Schema({
     },
     name: {
         type: String,
-        require: false
+        require: true
     },
     avatar: {
         type: String,

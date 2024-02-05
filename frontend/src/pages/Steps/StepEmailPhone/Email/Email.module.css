@@ -17,6 +17,7 @@
     gap: 5px;
     border-radius: 10px;
     padding: 10px;
+    box-shadow: inset -2px -2px 5px 0 var(--primary-bg-color);
 }
 
 .input {

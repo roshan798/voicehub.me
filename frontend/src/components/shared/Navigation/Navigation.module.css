@@ -66,26 +66,49 @@ nav {
     border-radius: 10px;
     background-color: var(--primary-bg-color);
 }
+
 .menu button:hover {
     background: var(--error);
 }
 
 .logoutBtn {
     width: 100%;
-    padding: 0.5rem 1rem;
+    padding: 0.8rem 1.2rem;
     border: none;
     cursor: pointer;
+    display: flex;
+    border-radius: 10px;
+    background-color: var(--primary-bg-color);
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.9rem;
 }
+
+
+.logoutBtn img {
+    height: 20px;
+    margin-right: 10px;
+    filter: invert(1);
+}
+
 
 .profileWrapper {
     display: flex;
     gap: 10px;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
 .profileWrapper img {
     width: 46px;
-     aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1;
     border-radius: 50%;
+}
+
+@media screen and (max-width: 768px) {
+    .emoji {
+        display: none;
+    }
+
 }

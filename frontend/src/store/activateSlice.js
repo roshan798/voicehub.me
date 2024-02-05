@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import defaultAvatar from "../assets/Images/avatar.jpeg";
+import defaultAvatar from "../assets/Images/avatar.png";
 
 const initialState = {
     name: "",
@@ -19,7 +19,6 @@ export const activateSlice = createSlice({
     },
 })
 
-// Action creators are generated for each case reducer function
 export const { setName, setAvatar } = activateSlice.actions
 
 export default activateSlice.reducer

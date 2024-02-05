@@ -45,6 +45,7 @@
     padding: 0px 1rem 0px 15px;
     border-radius: 999px;
     min-width: 150px;
+    box-shadow: inset -2px -2px 5px 0 var(--primary-bg-color);
 }
 
 .searchBox input {
@@ -99,7 +100,7 @@
 }
 
 .startRoomBtn:hover {
-    background-color: #19660f;
+    background-color: #07bc0c95;
 }
 
 

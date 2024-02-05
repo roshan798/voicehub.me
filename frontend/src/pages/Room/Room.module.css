@@ -123,11 +123,11 @@
     bottom: -5px;
     right: -8px;
     background-color: transparent;
-    filter: drop-shadow(0px 0px 5px #0f0f0f);
 }
 
 .muteUnmuteBtn img {
-    width: 28px;
+    width: 32px;
+    filter: drop-shadow(-2px -2px 9px #0BA);
 }
 
 .owner {
@@ -136,4 +136,14 @@
 
 .owner .avatar {
     border: 2px solid var(--success);
+}
+
+@media screen and (max-width: 768px) {
+    .handIcons {
+        display: none;
+    }
+
+    .roomTitle {
+        font-size: 1.3rem;
+    }
 }

@@ -22,7 +22,7 @@ class ActivateController {
         const userData = {
             name,
             avatar: `/storage/${imagePath}`,
-            activated: true, 
+            activated: true,
         }
         try {
             const user = await userService.updateUserProfile(userId, userData);
