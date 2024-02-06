@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAllRooms } from "../../http/index.js";
+import debounce from "../../utils/debounceFunction.js";
 import styles from "./Rooms.module.css";
 import searchIcon from "../../assets/Images/search.png";
 import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
@@ -10,16 +11,26 @@ import AddRoomModal from "../../components/AddRoomModal/AddRoomModal";
 export default function Rooms() {
     const [showModal, setShowModal] = useState(false);
     const [rooms, setRooms] = useState([]);
+    const roomsCopy = useRef([]);
     useEffect(() => {
         const fetchRooms = async () => {
             const { data } = await getAllRooms();
             setRooms(data.allRooms);
+            roomsCopy.current = data.allRooms;
         };
         fetchRooms();
     }, []);
     const toggleModal = () => {
         setShowModal((state) => !state);
     };
+
+    const handleSearch = debounce((e) => {
+        const searchValue = e.target.value;
+        const filteredRooms = roomsCopy.current.filter((room) => {
+            return room.topic.toLowerCase().includes(searchValue.toLowerCase());
+        });
+        setRooms(filteredRooms);
+    }, 300);
     return (
         <>
             <div className={styles.roomsContainer}>
@@ -37,6 +48,8 @@ export default function Rooms() {
                             <input
                                 type="text"
                                 id="search-box"
+                                placeholder="Discover rooms"
+                                onChange={handleSearch}
                             />
                         </div>
                     </div>
@@ -74,4 +87,3 @@ export default function Rooms() {
         </>
     );
 }
-
