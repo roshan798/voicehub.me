@@ -35,12 +35,11 @@ app.use('/storage', express.static('storage'));
 app.use(express.json({ limit: '4mb' }));
 
 // Sockets
-const socketUserMapping = {}
+const socketUserMapping = new Map();
 io.on('connection', (socket) => {
 
     socket.on(ACTIONS.JOIN, ({ roomId, user }) => {
-        socketUserMapping[socket.id] = user;
-        // console.log("JOIN",user);
+        socketUserMapping.set(socket.id, user)
         const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
         RoomService.addUserToRoom(roomId, user.id)
         clients.forEach((clientId) => {
@@ -55,7 +54,7 @@ io.on('connection', (socket) => {
                 {
                     peerId: clientId,
                     createOffer: true,
-                    user: socketUserMapping[clientId]
+                    user: socketUserMapping.get(clientId)
                 });
 
         });
@@ -98,7 +97,7 @@ io.on('connection', (socket) => {
         })
 
         // handle remove peer
-        const leaveRoom = ({ roomId,userId }) => {
+        const leaveRoom = ({ roomId, userId }) => {
             const { rooms } = socket;
             Array.from(rooms).forEach(roomId => {
                 const clients = Array.from(io.sockets.adapter.rooms.get(roomId));
@@ -106,17 +105,17 @@ io.on('connection', (socket) => {
                 clients.forEach(clientId => {
                     io.to(clientId).emit(ACTIONS.REMOVE_PEER, {
                         peerId: socket.id,
-                        userId: socketUserMapping[socket.id]?.id,
+                        userId: socketUserMapping.get(socket.id)?.id,
                     })
                     socket.emit(ACTIONS.REMOVE_PEER, {
                         peerId: clientId,
-                        userId: socketUserMapping[clientId]?.id,
+                        userId: socketUserMapping.get(socket.id)?.id,
                     });
                 })
                 socket.leave(roomId)
             });
             RoomService.removeUserFromRoom(roomId, user.id);
-            delete socketUserMapping[socket.id];
+            socketUserMapping.delete(socket.id);
         };
         socket.on(ACTIONS.LEAVE, leaveRoom);
         socket.on('disconnecting', leaveRoom);
