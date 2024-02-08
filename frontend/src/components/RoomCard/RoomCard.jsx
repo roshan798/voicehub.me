@@ -4,7 +4,8 @@ import chatIcon from "../../assets/Images/chatIcon.png";
 import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
 import kababMenu from "../../assets/Images/kababMenu.png";
 import { useNavigate } from "react-router-dom";
-export default function RoomCard({ roomId, title, speakers, ownerId }) {
+export default function RoomCard({ room }) {
+    const { topic: title, speakers, owner, id: roomId } = room;
     const navigate = useNavigate();
     return (
         <>
@@ -21,7 +22,7 @@ export default function RoomCard({ roomId, title, speakers, ownerId }) {
                                 src={
                                     speakers.length
                                         ? speakers[0].avatar
-                                        : ownerId.avatar
+                                        : owner.avatar
                                 }
                                 alt=""
                             />
@@ -38,7 +39,7 @@ export default function RoomCard({ roomId, title, speakers, ownerId }) {
                                 <p>
                                     {speakers.length
                                         ? speakers[0].name
-                                        : ownerId.name}
+                                        : owner.name}
                                 </p>
                                 <img src={chatIcon} />
                             </div>

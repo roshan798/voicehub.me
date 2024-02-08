@@ -126,9 +126,7 @@ export function useWebRTC(roomId, user) {
 				};
 
 				const handleRemovePeer = async ({ peerId, userId }) => {
-					// console.log("someone left the room", peerId, userId);
 					if (connections.current[peerId]) {
-						// console.log("closing connection");
 						connections.current[peerId].close();
 					}
 					delete connections.current[peerId];
@@ -173,7 +171,7 @@ export function useWebRTC(roomId, user) {
 				};
 			} catch (error) {
 				// Handle initialization errors
-				// console.error('Error initializing WebRTC:', error);
+				console.error('Error initializing WebRTC:', error);
 				// You may want to provide user feedback or trigger a fallback mechanism
 			}
 		};
@@ -189,13 +187,6 @@ export function useWebRTC(roomId, user) {
 					audio: true,
 				});
 
-				/*
-				log statements
-				localMediaStream.current.getAudioTracks().forEach((track) => {
-				  console.log('Audio Track:', track);
-				  console.log('Is Muted:', !track.enabled); // Log whether the audio is muted or not
-				});
-				*/
 				addNewClient({ ...user, muted: true }, () => {
 					const localElement = audioElements.current[user.id];
 					if (localElement) {
@@ -208,7 +199,7 @@ export function useWebRTC(roomId, user) {
 				});
 			} catch (error) {
 				// Handle media stream capture errors
-				// console.error('Error accessing user media:', error);
+				console.error('Error accessing user media:', error);
 				// You may want to provide user feedback or trigger a fallback mechanism
 			}
 		};

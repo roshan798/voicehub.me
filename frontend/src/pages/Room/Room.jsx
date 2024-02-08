@@ -75,7 +75,7 @@ export default function Room() {
                                   <div
                                       key={client.id}
                                       className={`${styles.clientWrapper} ${
-                                          room.ownerId.id == client.id
+                                          room.owner.id == client.id
                                               ? styles.owner
                                               : ""
                                       }`}>
