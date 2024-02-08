@@ -1,4 +1,5 @@
 .wrapper {
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
     padding: 2rem;
 }
 
@@ -13,6 +14,7 @@
     gap: 0.8rem;
     max-width: 760px;
     margin: auto;
+    padding-bottom: 2rem;
 }
 
 .formContainer h2 {
@@ -53,7 +55,6 @@
     padding: 0.8rem;
     background-color: var(--input-bg-color);
     width: 100%;
-    border-radius: 0.5rem;
     border: 1px solid transparent;
 }
 
@@ -63,23 +64,32 @@
     border: 1px solid white;
 }
 
+.input,
+.btn {
+    border-radius: 0.6rem;
+}
+
 .btn {
     width: 100%;
     background-color: var(--input-bg-color);
+    background-color: #0077FF10;
     color: white;
     border: none;
     outline: none;
     padding: 0.8rem;
-    border-radius: 0.5rem;
     font-size: 1.2rem;
     font-weight: 300;
     letter-spacing: 1px;
     cursor: pointer;
     border: 1px solid transparent;
+    margin-top: 1.5rem;
+    border: 1px solid var(--primary-button-bg);
 }
 
-.btn:hover {
+.btn:hover,
+.btn:focus {
     background-color: var(--primary-button-bg);
+    border-color: var(--input-bg-color);
 }
 
 .avatarWrapper {
@@ -94,7 +104,6 @@
     aspect-ratio: 1 / 1;
     width: 110px;
     margin: 1rem auto;
-
     object-fit: cover;
 }
 
@@ -107,4 +116,17 @@
     cursor: pointer;
     margin: 0.5rem auto;
     display: inline-block;
+}
+
+.backBtn {
+    composes: backBtn from "../Room/Room.module.css";
+    margin-left: -18px;
+    margin-top: -20px;
+    width: fit-content;
+}
+
+.loader {
+    composes: loader from "../../components/shared/CardButton/Button.module.css";
+    display: block;
+    margin: auto;
 }

@@ -1,8 +1,3 @@
-.mainContainer {
-    /* border: 1px solid red; */
-
-}
-
 .backBtn {
     cursor: pointer;
     padding: 0.3rem;
@@ -50,7 +45,7 @@
 
 .avatar {
     aspect-ratio: 1 / 1;
-    width: 60px;
+    width: 100px;
     object-fit: cover;
     border-radius: 50%;
     border: 2px solid var(--primary-button-bg);
@@ -108,7 +103,7 @@
     justify-content: flex-start;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
+    gap: 2rem;
     text-align: center;
 }
 
@@ -118,7 +113,7 @@
 
 .avatarWrapper {
     position: relative;
-    /* border: 1px solid rgb(115, 255, 0); */
+    cursor: pointer;
 }
 
 .muteUnmuteBtn {
@@ -128,9 +123,27 @@
     bottom: -5px;
     right: -8px;
     background-color: transparent;
-    filter: drop-shadow(0px 0px 5px #0f0f0f);
 }
 
 .muteUnmuteBtn img {
-    width: 28px;
+    width: 32px;
+    filter: drop-shadow(-2px -2px 9px #0BA);
+}
+
+.owner {
+    order: -1;
+}
+
+.owner .avatar {
+    border: 2px solid var(--success);
+}
+
+@media screen and (max-width: 768px) {
+    .handIcons {
+        display: none;
+    }
+
+    .roomTitle {
+        font-size: 1.3rem;
+    }
 }

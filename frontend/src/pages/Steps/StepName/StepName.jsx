@@ -36,7 +36,7 @@ export default function StepName({ onNext }) {
                     />
                 </div>
                 <p className={styles.termsText}>
-                    People use real name at coder’s house :)
+                    People use real name at voicehub :)
                 </p>
                 <Button
                     text={"Next"}

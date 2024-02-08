@@ -7,7 +7,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - /learnaws/Documents/databases/mongodb/learnaws-data:/data/db
+      - /voicehub/Documents/databases/mongodb/voicehub-data:/data/db
 
   backend:
     build:

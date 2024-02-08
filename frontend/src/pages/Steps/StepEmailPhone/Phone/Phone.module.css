@@ -11,9 +11,6 @@
     composes: input from "../Email/Email.module.css";
 }
 
-.input::placeholder {
-    color: var(--input-placeholder-text-color);
-}
 
 .termsText {
     composes: termsText from "../Email/Email.module.css";

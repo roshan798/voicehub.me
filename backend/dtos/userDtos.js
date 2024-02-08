@@ -10,7 +10,7 @@ class UserDto {
         if (user.phone) this.phone = user.phone;
         if (user.avatar) this.avatar = user.avatar
         this.activated = user.activated;
-        this.createdAt = user.createdAt;
+        // this.createdAt = user.createdAt;
     }
 }
 

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import logo from "../../../assets/Images/Emoji.png";
+import logoutIcon from "../../../assets/Images/exit.png";
 import styles from "./Navigation.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuth } from "../../../store/authSlice.js";
@@ -16,36 +17,40 @@ const ProfileSection = ({ logoutUser, user }) => {
         <>
             <div className={styles.right}>
                 <div className={styles.profileContainer}>
-                    <div className={styles.right}>
-                        <img
-                            src={user.avatar}
-                            alt="user-avatar"
-                            className={styles.avatar}
-                            onClick={toggleModal}
-                        />
-                        <ul
-                            className={`${styles.menu} hidden`}
-                            ref={modalRef}>
-                            <li>
-                                <Link
-                                    to="/profile"
-                                    className={styles.profileWrapper}>
-                                    <img
-                                        src={user.avatar}
-                                        alt={user.name}
-                                    />
-                                    <p className="name">{user.name}</p>
-                                </Link>
-                            </li>
-                            <li>
-                                <button
-                                    className={styles.logoutBtn}
-                                    onClick={logoutUser}>
-                                    Log out
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
+                    {user.activated && (
+                        <div className={styles.right}>
+                            <img
+                                src={user.avatar}
+                                alt="user-avatar"
+                                className={styles.avatar}
+                                onClick={toggleModal}
+                            />
+                            <ul
+                                className={`${styles.menu} hidden`}
+                                ref={modalRef}>
+                                <li>
+                                    <Link
+                                        to="/profile"
+                                        className={styles.profileWrapper}
+                                        onClick={toggleModal}>
+                                        <img
+                                            src={user.avatar}
+                                            alt={user.name}
+                                        />
+                                        <p className="name">{user.name}</p>
+                                    </Link>
+                                </li>
+                                <li>
+                                    <button
+                                        className={`${styles.logoutBtn} transition`}
+                                        onClick={logoutUser}>
+                                            <img src={logoutIcon} className="transition"/>
+                                        Log out
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
         </>
@@ -74,7 +79,7 @@ export default function Navigation() {
                         alt=""
                         className={styles.emoji}
                     />
-                    <span>Coders House</span>
+                    <span>Voicehub</span>
                 </Link>
                 {isAuth === true && user != null && (
                     <ProfileSection

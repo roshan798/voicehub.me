@@ -1,16 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
 import styles from "./RoomCard.module.css";
 import chatIcon from "../../assets/Images/chatIcon.png";
 import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
 import kababMenu from "../../assets/Images/kababMenu.png";
 import { useNavigate } from "react-router-dom";
-export default function RoomCard({ roomId, title, speakers }) {
+export default function RoomCard({ roomId, title, speakers, ownerId }) {
     const navigate = useNavigate();
     return (
         <>
             <div
-                className={styles.card}
+                className={`${styles.card} transition`}
                 onClick={() => {
                     navigate(`/room/${roomId}`);
                 }}>
@@ -19,9 +18,14 @@ export default function RoomCard({ roomId, title, speakers }) {
                     <div className={styles.detailsContainer}>
                         <div className={styles.avatarContainer}>
                             <img
-                                src={speakers[0].avatar}
+                                src={
+                                    speakers.length
+                                        ? speakers[0].avatar
+                                        : ownerId.avatar
+                                }
                                 alt=""
                             />
+
                             {speakers.length >= 2 && (
                                 <img
                                     src={speakers[1].avatar}
@@ -31,7 +35,11 @@ export default function RoomCard({ roomId, title, speakers }) {
                         </div>
                         <div className={styles.speakersNames}>
                             <div className={styles.names}>
-                                <p>{speakers[0].name}</p>
+                                <p>
+                                    {speakers.length
+                                        ? speakers[0].name
+                                        : ownerId.name}
+                                </p>
                                 <img src={chatIcon} />
                             </div>
                             {speakers.length > 1 && (

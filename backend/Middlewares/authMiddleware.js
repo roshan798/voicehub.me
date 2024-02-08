@@ -8,7 +8,7 @@ export default async function (req, res, next) {
         }
         const userData = await tokenService.verifyAccessToken(accessToken);
         if(!userData){
-            throw new Error();
+            throw new Error("User not found!");
         }
         req.user = userData;
     } catch (error) {

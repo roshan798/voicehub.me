@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useRef, useEffect } from "react";
 import styles from "./OtpInputs.module.css";
-export default function OtpInputs({ otp, setOtp, error, setError }) {
+export default function OtpInputs({ otp, setOtp }) {
     const inputRefs = useRef([]);
 
     useEffect(() => {
@@ -9,7 +9,6 @@ export default function OtpInputs({ otp, setOtp, error, setError }) {
     }, []);
 
     const handleInputChange = (e, index) => {
-        if (error) setError(null);
         const { value } = e.target;
         if (!isNaN(value) && value !== "") {
             setOtp((prevOtp) => {
@@ -19,6 +18,8 @@ export default function OtpInputs({ otp, setOtp, error, setError }) {
             });
             if (index < otp.length - 1) {
                 inputRefs.current[index + 1].focus();
+            }else {
+                document.getElementById("nxt-btn").focus();
             }
         }
     };
@@ -83,7 +84,6 @@ export default function OtpInputs({ otp, setOtp, error, setError }) {
                     />
                 ))}
             </div>
-            {/* <span className={styles.error}>{error ? error : ""}</span> */}
         </div>
     );
 }

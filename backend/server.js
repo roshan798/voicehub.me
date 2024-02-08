@@ -8,10 +8,11 @@ import connectDB from './database.js';
 import { Server } from 'socket.io';
 import { ACTIONS } from './actions.js';
 import http from 'http';
+import RoomService from './services/roomService.js';
 
 const PORT = process.env.PORT || 8080;
 const app = express();
-const server = http.createServer(app); // Use http.createServer
+const server = http.createServer(app);
 
 // for socket
 const io = new Server(server, {
@@ -31,16 +32,16 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use('/storage', express.static('storage'));
-app.use(express.json({ limit: '8mb' }));
+app.use(express.json({ limit: '4mb' }));
 
 // Sockets
-const socketUserMapping = {}
+const socketUserMapping = new Map();
 io.on('connection', (socket) => {
 
     socket.on(ACTIONS.JOIN, ({ roomId, user }) => {
-        socketUserMapping[socket.id] = user;
+        socketUserMapping.set(socket.id, user)
         const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
-
+        RoomService.addUserToRoom(roomId, user.id)
         clients.forEach((clientId) => {
 
             io.to(clientId).emit(ACTIONS.ADD_PEER,
@@ -53,7 +54,7 @@ io.on('connection', (socket) => {
                 {
                     peerId: clientId,
                     createOffer: true,
-                    user: socketUserMapping[clientId]
+                    user: socketUserMapping.get(clientId)
                 });
 
         });
@@ -96,7 +97,7 @@ io.on('connection', (socket) => {
         })
 
         // handle remove peer
-        const leaveRoom = ({ roomId }) => {
+        const leaveRoom = ({ roomId, userId }) => {
             const { rooms } = socket;
             Array.from(rooms).forEach(roomId => {
                 const clients = Array.from(io.sockets.adapter.rooms.get(roomId));
@@ -104,25 +105,24 @@ io.on('connection', (socket) => {
                 clients.forEach(clientId => {
                     io.to(clientId).emit(ACTIONS.REMOVE_PEER, {
                         peerId: socket.id,
-                        userId: socketUserMapping[socket.id]?.id,
+                        userId: socketUserMapping.get(socket.id)?.id,
                     })
                     socket.emit(ACTIONS.REMOVE_PEER, {
                         peerId: clientId,
-                        userId: socketUserMapping[clientId]?.id,
+                        userId: socketUserMapping.get(socket.id)?.id,
                     });
                 })
                 socket.leave(roomId)
             });
-
-            delete socketUserMapping[socket.id];
+            RoomService.removeUserFromRoom(roomId, user.id);
+            socketUserMapping.delete(socket.id);
         };
         socket.on(ACTIONS.LEAVE, leaveRoom);
         socket.on('disconnecting', leaveRoom);
     });
 });
 
-app.use(router); // Place routes after all other middleware
-
+app.use(router);
 router.get('/', (req, res) => {
     res.json({
         msg: 'Welcome to coders house',

@@ -20,7 +20,6 @@ class UserService {
     }
 
     async updateUserProfile(userId, updatedData) {
-        // console.log("userId,",updatedData);
         try {
             const user = await UserModel.findById(userId);
             if (!user) {
@@ -36,9 +35,9 @@ class UserService {
 
     async setAvatar(avatar, avatarChanged, previousAvatar) {
         let imagePath = "default.png";
-        if (avatar !== '/src/assets/Images/avatar.jpeg') {
+        if (avatar !== '/src/assets/Images/avatar.png') {
             const buffer = Buffer.from(avatar.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''), 'base64');
-            imagePath = `${Date.now()}-${Math.round(
+            imagePath = `images/${Date.now()}-${Math.round(
                 Math.random() * 1e9
             )}.png`
             const jimpResponse = await Jimp.read(buffer);
@@ -46,7 +45,7 @@ class UserService {
             jimpResponse.resize(150, Jimp.AUTO).write(storagePath)
         }
         // delete previous avatar
-        const previousAvatarPath = previousAvatar ? previousAvatar.split("/storage")[1] : undefined;
+        const previousAvatarPath = (avatarChanged && previousAvatar) ? previousAvatar.split("/storage")[1] : undefined;
         if (avatarChanged === true && previousAvatarPath && previousAvatarPath !== "/default.png") {
             let resolvedPath = path.join(__dirname, "../storage", previousAvatarPath);
             if (fs.existsSync(resolvedPath)) {

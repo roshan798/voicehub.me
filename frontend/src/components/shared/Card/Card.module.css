@@ -2,22 +2,26 @@
     padding: 2rem 2.5rem;
     background: var(--secondary-bg-color);
     backdrop-filter: blur(10px);
-
     border-radius: 20px;
     text-align: center;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 38%),
+        0 2px 2px rgba(0, 0, 0, 0.40),
+        0 4px 4px rgba(0, 0, 0, 0.40),
+        0 8px 8px rgba(0, 0, 0, 0.40),
+        0 16px 16px rgba(0, 0, 0, 0.40);
 }
 
 .heading {
     display: inline-flex;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 
 }
 
 .heading img {
-    width: 30px;
+    width: 28px;
 }
 
 .heading span {
@@ -33,7 +37,7 @@
     position: absolute;
     width: 10px;
     height: 10px;
-    background-color: #0077ff30;
+    background-color: #0077fd26;
     border-radius: 999px;
     box-shadow: #0077FD -1px 1px 90px 20px;
 }

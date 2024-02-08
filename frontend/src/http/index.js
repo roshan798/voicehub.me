@@ -47,9 +47,7 @@ api.interceptors.response.use(
         return config
     },
     async (error) => {
-        console.log("Error happend bhai", `${import.meta.env.VITE_REACT_APP_API_URL}/api/v1/refresh`);
         const originalRequest = error.config;
-        console.log(error);
         if (error.response.status === 401 &&
             originalRequest &&
             !originalRequest._isRetry) {

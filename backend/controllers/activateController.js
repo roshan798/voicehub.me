@@ -8,7 +8,7 @@ class ActivateController {
                 message: "All fields are required"
             });
         }
-        let imagePath = 'default.png'
+        let imagePath;
         try {
             imagePath = await userService.setAvatar(avatar, false);
         }
@@ -22,7 +22,7 @@ class ActivateController {
         const userData = {
             name,
             avatar: `/storage/${imagePath}`,
-            activated: true, 
+            activated: true,
         }
         try {
             const user = await userService.updateUserProfile(userId, userData);
