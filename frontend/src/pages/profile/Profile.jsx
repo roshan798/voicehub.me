@@ -1,5 +1,5 @@
 import styles from "./profile.module.css";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { updateProfile } from "../../http";
@@ -10,6 +10,7 @@ const Profile = () => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.authSlice);
     const [userDetails, setUserDetails] = useState(user);
+    const [loading, setLoading] = useState(false);
     const handleUpdateDetail = async () => {
         const { name, email, avatar, phone } = userDetails;
         const {
@@ -42,12 +43,15 @@ const Profile = () => {
             };
 
             try {
+                setLoading(true);
                 const { data } = await updateProfile(updatedUser);
                 showToastMessage("success", "Profile updated!", "dark");
                 dispatch(setAuth({ data: data }));
             } catch (error) {
                 showToastMessage("error", error.message, "dark");
                 console.log(error);
+            } finally {
+                setLoading(false);
             }
         }
     };
@@ -84,9 +88,9 @@ const Profile = () => {
     return (
         <div className={styles.wrapper}>
             <div>
-                <Link to={"/rooms"}
-                    className={styles.backBtn}
-                    >
+                <Link
+                    to={"/rooms"}
+                    className={styles.backBtn}>
                     <img
                         src={ArrowForward}
                         alt="back"
@@ -171,8 +175,13 @@ const Profile = () => {
 
                 <button
                     className={`${styles.btn} transition`}
-                    onClick={handleUpdateDetail}>
-                    Update Profile
+                    onClick={handleUpdateDetail}
+                    disabled={loading}>
+                    {loading ? (
+                        <span className={styles.loader}></span>
+                    ) : (
+                        "Update Profile"
+                    )}
                 </button>
             </div>
         </div>
