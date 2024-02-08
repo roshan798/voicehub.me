@@ -8,7 +8,7 @@ class ActivateController {
                 message: "All fields are required"
             });
         }
-        let imagePath = 'default.png'
+        let imagePath;
         try {
             imagePath = await userService.setAvatar(avatar, false);
         }
