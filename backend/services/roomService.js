@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import roomModal from "../Models/roomModal.js";
 
 class RoomService {
@@ -53,9 +54,17 @@ class RoomService {
             .exec();
         return rooms;
     }
-    async getRoom(roomid) {
-        const room = await roomModal.findOne({ _id: roomid });
-        return room;
+    async getRoom(roomId) {
+
+        if (!ObjectId.isValid(roomId)) {
+            throw new Error("Invalid room. The room you are looking for does not exist.");
+        }
+        try {
+            const room = await roomModal.findOne({ _id: roomId });
+            return room;
+        } catch (error) {
+            throw new Error("Error occurred while getting the room. Please try again later.");
+        }
     }
 }
 
