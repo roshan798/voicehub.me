@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Navigation from "./components/shared/Navigation/Navigation.jsx";
@@ -9,11 +9,14 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Home = lazy(() => import("./pages/Home/Home.jsx"));
-const Authenticate = lazy(() => import("./pages/Authenticate/Authenticate.jsx"));
+const Authenticate = lazy(() =>
+    import("./pages/Authenticate/Authenticate.jsx")
+);
 const Rooms = lazy(() => import("./pages/Rooms/Rooms.jsx"));
 const Room = lazy(() => import("./pages/Room/Room.jsx"));
 const Activate = lazy(() => import("./pages/Activate/Activate.jsx"));
 const Profile = lazy(() => import("./pages/profile/Profile.jsx"));
+const Error404 = lazy(() => import("./pages/Error/Error404.jsx"));
 
 function App() {
     const { isAuth, user } = useSelector((state) => {
@@ -32,7 +35,9 @@ function App() {
                     <Route
                         exact
                         path="/"
-                        element={!isAuth ? <Home /> : <Navigate to={"/activate"} />}
+                        element={
+                            !isAuth ? <Home /> : <Navigate to={"/activate"} />
+                        }
                     />
                     <Route
                         path="/authenticate"
@@ -102,6 +107,10 @@ function App() {
                                 <Navigate to={"/"} />
                             )
                         }
+                    />
+                    <Route
+                        path="*"
+                        element={<Error404 />}
                     />
                 </Routes>
             </Suspense>

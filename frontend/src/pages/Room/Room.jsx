@@ -29,11 +29,21 @@ export default function Room() {
     }, [isMute]);
 
     useEffect(() => {
-        const fetchRoom = async () => {
-            const { data } = await getRoom(roomId);
-            setRoom(data);
-        };
-        fetchRoom();
+        try {
+            const fetchRoom = async () => {
+                const { data } = await getRoom(roomId);
+                if (data.error) {
+                    return navigate(`/error`, {
+                        state: { error: data.error, to: "/rooms" },
+                    });
+                }
+                setRoom(data);
+            };
+            fetchRoom();
+        } catch (error) {
+            console.error("Error fetching room:", error);
+            navigate("/error");
+        }
     }, [roomId]);
     return (
         <div className={styles.mainContainer}>
@@ -75,11 +85,10 @@ export default function Room() {
                                   <div
                                       key={client.id}
                                       className={`${styles.clientWrapper} ${
-                                          room.ownerId.id == client.id
+                                          room.owner.id == client.id
                                               ? styles.owner
                                               : ""
                                       }`}>
-                                     
                                       <div
                                           className={styles.avatarWrapper}
                                           onClick={() => {

@@ -4,7 +4,7 @@ class RoomDto {
     topic;
     roomType;
     speakers;
-    ownerId;
+    owner;
     createdAt;
 
     constructor(room) {
@@ -12,9 +12,9 @@ class RoomDto {
         this.topic = room.topic;
         this.roomType = room.roomType;
         this.speakers = room.speakers;
-        this.ownerId = new UserDto(room.ownerId);
-        this.createdAt = room.createdAt;
+        this.owner = new UserDto(room.ownerId);
         this.speakers = room.speakers.map((speaker) => new UserDto(speaker));
+        // this.createdAt = room.createdAt;
     }
 }
 export default RoomDto;
