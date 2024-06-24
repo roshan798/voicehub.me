@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setAuth } from '../store/authSlice';
-export function useLaodingWithRefresh() {
+export function useLoadingWithRefresh() {
     const [Loading, setLoading] = useState(true)
     const dispatch = useDispatch();
 
