@@ -7,6 +7,7 @@ import ArrowForward from "../../assets/Images/Arrow forward.png";
 import muteIcon from "../../assets/Images/mute.png";
 import unmuteIcon from "../../assets/Images/unmute.png";
 import styles from "./Room.module.css";
+import shareIcon from "../../assets/shareIcon.svg";
 
 export default function Room() {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function Room() {
     };
 
     const handleMuteClick = (clientId, clientMute) => {
-        if (clientId != user.id) return;
+        if (clientId !== user.id) return;
         setMute((isMuted) => !isMuted);
     };
 
@@ -45,6 +46,25 @@ export default function Room() {
             navigate("/error");
         }
     }, [roomId]);
+
+    const handleShare = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: room?.topic || "Join my voice room",
+                    text: "Join me in this voice room!",
+                    url: window.location.href,
+                });
+                // add the toastify
+                console.log("Share successful!");
+            } catch (error) {
+                console.error("Error sharing:", error);
+            }
+        } else {
+            console.log("Web Share API not supported in this browser.");
+        }
+    };
+
     return (
         <div className={styles.mainContainer}>
             <div>
@@ -65,76 +85,80 @@ export default function Room() {
                         {room?.topic}
                     </div>
                     <div className={`${styles.topRight} ${styles.actions}`}>
-                        {/* <button
-                            className={`${styles.btn} transition`}
-                            disabled>
-                            <span className={styles.handIcons}>✋</span>
-                        </button> */}
                         <button
                             onClick={handleManualLeave}
                             className={`${styles.btnWithIcon} ${styles.btn} transition`}>
                             <span className={styles.handIcons}>✌️</span>
-                            <span>Leave quitely</span>
+                            <span>Leave quietly</span>
+                        </button>
+                        <button
+                            onClick={handleShare}
+                            className={`${styles.btn} transition`}
+                            title="share"
+                            style={{
+                                display: "grid",
+                                placeItems: "center",
+                                padding: "8px",
+                            }}>
+                            <img
+                                style={{
+                                    filter: "invert(1)",
+                                }}
+                                src={shareIcon}
+                                alt="share"
+                            />
                         </button>
                     </div>
                 </div>
                 <div className={styles.clientsList}>
                     {clients.length > 0
-                        ? clients.map((client) => {
-                              return (
+                        ? clients.map((client) => (
+                              <div
+                                  key={client.id}
+                                  className={`${styles.clientWrapper} ${
+                                      room.owner.id === client.id
+                                          ? styles.owner
+                                          : ""
+                                  }`}>
                                   <div
-                                      key={client.id}
-                                      className={`${styles.clientWrapper} ${
-                                          room.owner.id == client.id
-                                              ? styles.owner
-                                              : ""
-                                      }`}>
-                                      <div
-                                          className={styles.avatarWrapper}
-                                          onClick={() => {
-                                              handleMuteClick(
-                                                  client.id,
-                                                  client.muted
-                                              );
-                                          }}>
-                                          <img
-                                              src={client.avatar}
-                                              alt={`${client.name} avatar`}
-                                              className={styles.avatar}
-                                          />
-                                          {client.muted ? (
-                                              <button
-                                                  className={
-                                                      styles.muteUnmuteBtn
-                                                  }>
-                                                  <img
-                                                      src={muteIcon}
-                                                      alt=""
-                                                  />
-                                                  {/* Unmute */}
-                                              </button>
-                                          ) : (
-                                              <button
-                                                  className={
-                                                      styles.muteUnmuteBtn
-                                                  }>
-                                                  <img
-                                                      src={unmuteIcon}
-                                                      alt=""
-                                                  />
-                                                  {/* Mute */}
-                                              </button>
-                                          )}
-                                      </div>
-                                      <audio
-                                          ref={(instance) => {
-                                              provideRef(instance, client.id);
-                                          }}
+                                      className={styles.avatarWrapper}
+                                      onClick={() => {
+                                          handleMuteClick(
+                                              client.id,
+                                              client.muted
+                                          );
+                                      }}>
+                                      <img
+                                          src={client.avatar}
+                                          alt={`${client.name} avatar`}
+                                          className={styles.avatar}
                                       />
-                                      <h4>{client.name.split(" ")[0]}</h4>
+                                      {client.muted ? (
+                                          <button
+                                              className={styles.muteUnmuteBtn}>
+                                              <img
+                                                  src={muteIcon}
+                                                  alt="Mute"
+                                              />
+                                          </button>
+                                      ) : (
+                                          <button
+                                              className={styles.muteUnmuteBtn}>
+                                              <img
+                                                  src={unmuteIcon}
+                                                  alt="Unmute"
+                                              />
+                                          </button>
+                                      )}
                                   </div>
-                              );
-                          })
+                                  <audio
+                                      ref={(instance) => {
+                                          provideRef(instance, client.id);
+                                      }}
+                                  />
+                                  <h4>{client.name.split(" ")[0]}</h4>
+                              </div>
+                          ))
                         : ""}
                 </div>
             </div>

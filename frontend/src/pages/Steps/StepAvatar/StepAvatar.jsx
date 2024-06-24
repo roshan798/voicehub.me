@@ -31,7 +31,7 @@ export default function StepAvatar() {
         setLoading(true);
         try {
             const resp = await activate({ name, avatar });
-            console.log(resp);
+            // console.log(resp);
             if (resp.data.auth) {
                 const data = { ...resp.data };
                 dispatch(setAuth({ data: data }));
