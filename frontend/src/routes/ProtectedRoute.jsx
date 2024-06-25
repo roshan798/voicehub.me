@@ -13,7 +13,6 @@ export default function ProtectedRoute() {
 
     if (!isAuth) {
         // Save the current location they were trying to go to.
-        console.log("Protected");
         localStorage.setItem("redirectAfterLogin", location.pathname);
         return <Navigate to="/authenticate" />;
     }
