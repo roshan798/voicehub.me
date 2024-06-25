@@ -8,18 +8,25 @@ import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
 import RoomCard from "../../components/RoomCard/RoomCard";
 import AddRoomModal from "../../components/AddRoomModal/AddRoomModal";
 
+const RESULTS_PER_PAGE = 6;
+
 export default function Rooms() {
     const [showModal, setShowModal] = useState(false);
     const [rooms, setRooms] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const roomsCopy = useRef([]);
+
     useEffect(() => {
-        const fetchRooms = async () => {
-            const { data } = await getAllRooms();
+        const fetchRooms = async (page) => {
+            const { data } = await getAllRooms(page, RESULTS_PER_PAGE);
             setRooms(data.allRooms);
+            setTotalPages(data.totalPages);
             roomsCopy.current = data.allRooms;
         };
-        fetchRooms();
-    }, []);
+        fetchRooms(page);
+    }, [page]);
+
     const toggleModal = () => {
         setShowModal((state) => !state);
     };
@@ -31,6 +38,15 @@ export default function Rooms() {
         });
         setRooms(filteredRooms);
     }, 300);
+
+    const handlePrevPage = () => {
+        setPage((prevPage) => Math.max(prevPage - 1, 1));
+    };
+
+    const handleNextPage = () => {
+        setPage((prevPage) => Math.min(prevPage + 1, totalPages));
+    };
+
     return (
         <>
             <div className={styles.roomsContainer}>
@@ -79,6 +95,25 @@ export default function Rooms() {
                         <div>No rooms found</div>
                     )}
                 </div>
+                {totalPages > 1 && (
+                    <div className={styles.paginationWrapper}>
+                        <button
+                            className={styles.paginationButton}
+                            onClick={handlePrevPage}
+                            disabled={page === 1}>
+                            Prev
+                        </button>
+                        <span className={styles.pageInfo}>
+                            Page {page} of {totalPages}
+                        </span>
+                        <button
+                            className={styles.paginationButton}
+                            onClick={handleNextPage}
+                            disabled={page === totalPages}>
+                            Next
+                        </button>
+                    </div>
+                )}
             </div>
             {showModal && <AddRoomModal toggleModal={toggleModal} />}
         </>

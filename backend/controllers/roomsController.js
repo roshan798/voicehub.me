@@ -18,6 +18,7 @@ class RoomsController {
     }
 
     async index(req, res) {
+        console.log(" caleed getAll Rooms");
         const resultsPerPage = parseInt(req.query.resultsPerPage) || 6; // Default to 10 results per page if not specified
         const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
 
