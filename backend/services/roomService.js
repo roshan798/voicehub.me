@@ -45,14 +45,24 @@ class RoomService {
     }
 
 
-    async getAllRooms(types) {
+    async getAllRooms(types, limit, skip) {
         const rooms = await roomModal.find({
             roomType: { $in: types }
         })
             .populate('speakers')
             .populate('ownerId')
+            .sort({ createdAt: -1 }) // Sort by createdAt field in descending order
+            .limit(limit)
+            .skip(skip)
             .exec();
         return rooms;
+    }
+
+    async noOfRooms(types) {
+        const totalRooms = await roomModal.countDocuments({
+            roomType: { $in: types }
+        });
+        return totalRooms;
     }
     async getRoom(roomId) {
 

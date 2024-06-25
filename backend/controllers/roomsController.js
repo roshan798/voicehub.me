@@ -18,11 +18,26 @@ class RoomsController {
     }
 
     async index(req, res) {
+        const resultsPerPage = parseInt(req.query.resultsPerPage) || 6; // Default to 10 results per page if not specified
+        const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+
+        const limit = resultsPerPage;
+        const skip = (page - 1) * resultsPerPage;
+
         const types = ['open'];
-        const rooms = await roomService.getAllRooms(types);
+        const rooms = await roomService.getAllRooms(types, limit, skip);
         const allRooms = rooms.map(room => new RoomDto(room));
-        res.json({ allRooms })
+
+        // Optionally, you might want to include total count of rooms for pagination info
+        const totalRooms = await roomService.noOfRooms(types);
+        res.json({
+            allRooms,
+            currentPage: page,
+            totalPages: Math.ceil(totalRooms / resultsPerPage),
+            totalRooms
+        });
     }
+
 
     async show(req, res) {
         const roomId = req.params.roomId;
