@@ -1,4 +1,4 @@
-import mongoose from "mongoose";;
+import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
@@ -9,9 +9,9 @@ const roomSchema = new Schema({
     },
     roomType: {
         type: String,
-        required: true
+        required: true,
+        enum: ['open', 'social', 'closed']
     },
-
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'user',
@@ -25,15 +25,34 @@ const roomSchema = new Schema({
         ],
         required: false
     },
+    approvedUsers: {
+        type: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'user'
+            },
+        ],
+        required: false
+    },
+    joinRequests: {
+        type: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'user'
+            },
+        ],
+        required: false
+    },
     ownerId: {
         type: Schema.Types.ObjectId,
         ref: 'user'
+    },
+    ownerSocketId: {
+        type: String, // Assuming ownerSocketId is a string (socket.io socket id)
+        required: false
     }
-
-},
-    {
-        timestamps: true
-    }
-)
+}, {
+    timestamps: true
+});
 
 export default mongoose.model('room', roomSchema, 'rooms');

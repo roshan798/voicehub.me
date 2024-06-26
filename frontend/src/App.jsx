@@ -22,7 +22,6 @@ const Profile = lazy(() => import("./pages/profile/Profile.jsx"));
 const Error404 = lazy(() => import("./pages/Error/Error404.jsx"));
 
 function App() {
-    const { isAuth, user } = useSelector((state) => state.authSlice);
     const { Loading } = useLoadingWithRefresh();
 
     if (Loading) {

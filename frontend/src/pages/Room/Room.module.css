@@ -153,7 +153,7 @@
     padding: 5px;
     border-radius: 999px;
     box-shadow: 0 4px 8px var(--primary-bg-color);
-    z-index: 1000;
+    z-index: 100;
 }
 
 .optionBtn {
@@ -182,6 +182,143 @@
 /* Adjust existing styles as needed */
 
 /*  */
+/* Room.module.css */
+
+.requestsContainer {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    padding: 5px;
+    background-color: var(--primary-bg-color);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+.requestInnerContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 90vh;
+}
+
+
+.newRequest::before,
+.newRequest::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #FFC107;
+}
+
+.newRequest::after {
+    animation: pulse 1.5s ease-in-out infinite;
+    background-color: #FFC10730;
+
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: scale(2.6);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+}
+
+
+.requestsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.requestsHeader h3 {
+    font-size: 18px;
+    color: #333;
+}
+
+.menuBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: auto;
+}
+
+
+.requestItem {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--secondary-bg-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.avatarWrapperRequest {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.requestDetails {
+    flex: 1;
+}
+
+.requestDetails h4 {
+    font-size: 16px;
+    color: whitesmoke;
+    margin-bottom: 5px;
+}
+
+.requestActions {
+    margin-top: 5px;
+}
+
+.acceptBtn,
+.declineBtn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.acceptBtn {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.acceptBtn:hover {
+    background-color: #3f9130;
+}
+
+.declineBtn {
+    background-color: #f44336;
+    color: #fff;
+    margin-left: 10px;
+}
+
+.declineBtn:hover {
+    background-color: #da3c16;
+}
+
 @media screen and (max-width: 768px) {
 
     .roomTitle {

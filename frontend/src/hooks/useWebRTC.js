@@ -1,17 +1,20 @@
+/* eslint-disable no-unused-vars */
 import { useCallback, useEffect, useRef } from 'react';
 import { useStateWithCallback } from './useStateWithCallback';
 import socketInit from '../socket/index.js';
 import { ACTIONS } from '../actions.js';
 import freeice from 'freeice';
+import showToastMessage from "../utils/showToastMessage.js"
 
 export function useWebRTC(roomId, user) {
 	const [clients, setClients] = useStateWithCallback([]);
+	const [joinRequests, setJoinRequests] = useStateWithCallback([])
 	const audioElements = useRef({});
 	const connections = useRef({});
 	const localMediaStream = useRef(null);
 	const socket = useRef(null);
 	const clientsRef = useRef([]);
-
+	const [approvedTojoin, setApprovedToJoin] = useStateWithCallback(true)
 	// Add a new client to the list
 	const addNewClient = useCallback(
 		(newClient, cb) => {
@@ -29,15 +32,57 @@ export function useWebRTC(roomId, user) {
 		[setClients]
 	);
 
+	// start Capture
+	const startCapture = async () => {
+		// console.log(" 57 start capture");
+		try {
+			localMediaStream.current = await navigator.mediaDevices.getUserMedia({
+				audio: true,
+			});
+
+			addNewClient({ ...user, muted: true }, () => {
+				const localElement = audioElements.current[user.id];
+				if (localElement) {
+					localElement.volume = 0;
+					localElement.srcObject = localMediaStream.current;
+				}
+
+				// Socket emit JOIN
+				socket.current.emit(ACTIONS.JOIN, { roomId, user });
+			});
+		} catch (error) {
+			// Handle media stream capture errors
+			console.error('Error accessing user media:', error);
+			// You may want to provide user feedback or trigger a fallback mechanism
+		}
+	};
+
+	// 
+	// Stop Capture local media stream
+	const stopCaptureAndLeave = () => {
+		// console.log('Leaving room')
+		if (localMediaStream.current && localMediaStream.current.getTracks) {
+			localMediaStream.current.getTracks().forEach((track) => {
+				track.stop();
+			});
+		}
+		socket.current.emit(ACTIONS.LEAVE, { roomId, userId: user.id });
+	}
+
 	// Initialize WebRTC and Socket
 	useEffect(() => {
 		const initializeWebRTC = async () => {
+			// console.log("line 56 called initialzeWebRTC");
 			try {
+				Object.values(connections.current).forEach(connection => connection.close());
+				connections.current = {};
+
 				// Initialize socket
 				socket.current = socketInit();
 
 				// Event handlers for WebRTC
 				const handleNewPeer = async ({ peerId, createOffer, user: remoteUser }) => {
+					if (!remoteUser) return; // new
 					if (peerId in connections.current) {
 						return console.warn(`Already Connected with ${peerId} ${user.name}`);
 					}
@@ -56,6 +101,7 @@ export function useWebRTC(roomId, user) {
 					};
 
 					// Handle on track on this connection
+
 					connections.current[peerId].ontrack = ({ streams: [remoteStream] }) => {
 						addNewClient({ ...remoteUser, muted: true }, () => {
 							if (audioElements.current[remoteUser.id]) {
@@ -159,15 +205,42 @@ export function useWebRTC(roomId, user) {
 				socket.current.on(ACTIONS.UNMUTE, ({ peerId, userId }) => {
 					setMute(false, userId);
 				});
+				socket.current.on(ACTIONS.USER_NOT_ALLOWED, ({ roomId, user }) => {
+					// console.log("user is not in the approved list ");
+					setApprovedToJoin(false)
+					return;
+				})
 
+				socket.current.on(ACTIONS.APPROVE_JOIN_REQUEST, ({ roomId, user }) => {
+					// console.log("a user a requesting to join ur room");
+					setJoinRequests(requests => {
+						return [...requests, user]
+					})
+				})
+
+				socket.current.on(ACTIONS.JOIN_APPROVED, ({ roomId }) => {
+					stopCaptureAndLeave();
+					startCapture()
+					initializeWebRTC();
+					// console.log("user is approved to join the room");
+					showToastMessage("success", "Request approved")
+					setApprovedToJoin(true)
+				})
+				socket.current.on(ACTIONS.JOIN_CANCELLED, ({ roomId }) => {
+					// console.log("user is Declined to join the room");
+					setApprovedToJoin(false)
+				})
 				return () => {
-					// Cleanup on component unmount
-					socket.current.off(ACTIONS.ADD_PEER);
-					socket.current.off(ACTIONS.ICE_CANDIDATE);
-					socket.current.off(ACTIONS.SESSION_DESCRIPTION);
-					socket.current.off(ACTIONS.REMOVE_PEER);
+					socket.current.off(ACTIONS.ADD_PEER, handleNewPeer);
+					socket.current.off(ACTIONS.ICE_CANDIDATE, handleIceCandidate);
+					socket.current.off(ACTIONS.SESSION_DESCRIPTION, handleRemoteSDP);
+					socket.current.off(ACTIONS.REMOVE_PEER, handleRemovePeer);
 					socket.current.off(ACTIONS.MUTE);
 					socket.current.off(ACTIONS.UNMUTE);
+					socket.current.off(ACTIONS.USER_NOT_ALLOWED);
+					socket.current.off(ACTIONS.APPROVE_JOIN_REQUEST);
+					socket.current.off(ACTIONS.JOIN_APPROVED);
+					socket.current.off(ACTIONS.JOIN_CANCELLED);
 				};
 			} catch (error) {
 				// Handle initialization errors
@@ -179,47 +252,23 @@ export function useWebRTC(roomId, user) {
 		initializeWebRTC();
 	}, [addNewClient, setClients]);
 
-	// Capture local media stream
+
+
 	useEffect(() => {
-		const startCapture = async () => {
-			try {
-				localMediaStream.current = await navigator.mediaDevices.getUserMedia({
-					audio: true,
-				});
-
-				addNewClient({ ...user, muted: true }, () => {
-					const localElement = audioElements.current[user.id];
-					if (localElement) {
-						localElement.volume = 0;
-						localElement.srcObject = localMediaStream.current;
-					}
-
-					// Socket emit JOIN
-					socket.current.emit(ACTIONS.JOIN, { roomId, user });
-				});
-			} catch (error) {
-				// Handle media stream capture errors
-				console.error('Error accessing user media:', error);
-				// You may want to provide user feedback or trigger a fallback mechanism
-			}
-		};
-
-		startCapture();
-
+		if (approvedTojoin) {
+			// console.log("start capture started");
+			startCapture();
+		}
+		else {
+			// console.log("start capture not started");
+		}
 		// Cleanup when leaving the room
-		return () => {
-			// console.log('Leaving room')
-			if (localMediaStream.current && localMediaStream.current.getTracks) {
-				localMediaStream.current.getTracks().forEach((track) => {
-					track.stop();
-				});
-			}
-			socket.current.emit(ACTIONS.LEAVE, { roomId, userId: user.id });
-		};
+		return stopCaptureAndLeave;
 	}, [addNewClient, roomId, user]);
 
 	useEffect(() => {
 		clientsRef.current = clients;
+		// console.log("277 clients", clients);
 	}, [clients]);
 
 	// Provide reference to audio elements
@@ -250,5 +299,5 @@ export function useWebRTC(roomId, user) {
 		}, 200);
 	};
 
-	return { clients, provideRef, handleMute };
+	return { clients, provideRef, handleMute, approvedTojoin, joinRequests, setJoinRequests };
 }

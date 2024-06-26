@@ -7,6 +7,8 @@ import searchIcon from "../../assets/Images/search.png";
 import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
 import RoomCard from "../../components/RoomCard/RoomCard";
 import AddRoomModal from "../../components/AddRoomModal/AddRoomModal";
+import { deleteRoom as deleteRoomAPI } from "../../http";
+import showToastMessage from "../../utils/showToastMessage.js";
 
 const RESULTS_PER_PAGE = 6;
 
@@ -17,12 +19,22 @@ export default function Rooms() {
     const [totalPages, setTotalPages] = useState(0);
     const roomsCopy = useRef([]);
 
+    // Fetch rooms when the component mounts or page changes
     useEffect(() => {
         const fetchRooms = async (page) => {
-            const { data } = await getAllRooms(page, RESULTS_PER_PAGE);
-            setRooms(data.allRooms);
-            setTotalPages(data.totalPages);
-            roomsCopy.current = data.allRooms;
+            try {
+                const roomType = ["open", "social"];
+                const { data } = await getAllRooms(
+                    page,
+                    RESULTS_PER_PAGE,
+                    roomType
+                );
+                setRooms(data.allRooms);
+                setTotalPages(data.totalPages);
+                roomsCopy.current = data.allRooms;
+            } catch (error) {
+                console.error("Error fetching rooms:", error);
+            }
         };
         fetchRooms(page);
     }, [page]);
@@ -45,6 +57,28 @@ export default function Rooms() {
 
     const handleNextPage = () => {
         setPage((prevPage) => Math.min(prevPage + 1, totalPages));
+    };
+
+    const deleteRoom = async (roomId) => {
+        try {
+            const { data } = await deleteRoomAPI(roomId);
+            if (data.success) {
+                showToastMessage("success", "Room deleted successfully");
+                setRooms((room) => {
+                    return room.filter((r) => r.id !== roomId);
+                });
+            } else {
+                throw new Error("Error happened in deleting room");
+            }
+        } catch (error) {
+            showToastMessage(
+                "error",
+                "You are not allowed to delete this room"
+            );
+            console.error("Error deleting room:", error);
+        } finally {
+            setShowModal(false);
+        }
     };
 
     return (
@@ -83,14 +117,13 @@ export default function Rooms() {
                 </div>
                 <div className={styles.roomsCardsWrapper}>
                     {rooms.length > 0 ? (
-                        rooms.map((room, index) => {
-                            return (
-                                <RoomCard
-                                    room={room}
-                                    key={index}
-                                />
-                            );
-                        })
+                        rooms.map((room, index) => (
+                            <RoomCard
+                                room={room}
+                                deleteRoom={deleteRoom}
+                                key={index}
+                            />
+                        ))
                     ) : (
                         <div>No rooms found</div>
                     )}

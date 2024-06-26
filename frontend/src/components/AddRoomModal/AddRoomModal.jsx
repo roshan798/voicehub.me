@@ -28,11 +28,11 @@ export default function AddRoomModal({ toggleModal }) {
         <>
             <div className={styles.modalMask}>
                 <div className={styles.cardBody}>
-                    <div
+                    <button
                         className={styles.cross}
                         onClick={toggleModal}>
                         X
-                    </div>
+                    </button>
                     <div className={styles.modalHeader}>
                         <h3>Enter a topic to be disscussed</h3>
                         <input
@@ -46,42 +46,46 @@ export default function AddRoomModal({ toggleModal }) {
                         <div className={styles.typesContainer}>
                             <h3>Room type</h3>
                             <div className={styles.types}>
-                                <div
+                                <button
                                     className={`${styles.type} transition ${
                                         roomType === "open"
                                             ? styles.selected
                                             : ""
-                                    }`}>
+                                    }`}
+                                    onClick={() => setRoomType("open")}>
                                     <img
                                         src={globe}
                                         alt="Open"
                                     />
                                     <p>Open</p>
-                                </div>
-                                <div
+                                </button>
+                                <button
                                     className={`${styles.type} transition ${
                                         roomType === "social"
                                             ? styles.selected
                                             : ""
-                                    }`}>
+                                    }`}
+                                    onClick={() => setRoomType("social")}>
                                     <img
                                         src={group}
                                         alt="Social"
                                     />
                                     <p>Social</p>
-                                </div>
-                                <div
+                                </button>
+                                <button
                                     className={`${styles.type} transition ${
                                         roomType === "closed"
                                             ? styles.selected
                                             : ""
-                                    }`}>
+                                    }`}
+                                    // onClick={() => setRoomType("closed")}
+                                    style={{ pointerEvents: "none" }}>
                                     <img
                                         src={lock}
                                         alt="Closed"
                                     />
                                     <p>Closed</p>
-                                </div>
+                                </button>
                             </div>
                         </div>
                     </div>

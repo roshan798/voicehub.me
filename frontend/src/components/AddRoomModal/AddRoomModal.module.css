@@ -78,9 +78,13 @@
     padding: 1rem;
     padding-top: 1.1rem;
     width: 100%;
+    background-color: transparent;
+    outline: none;
+    border: none;
 }
 
-.type:hover {
+.type:hover,
+.type:focus {
     background: var(--primary-bg-color);
 }
 
@@ -96,6 +100,7 @@
 .selected {
     background: var(--primary-bg-color);
 }
+
 
 .modalFooter {
     text-align: center;
@@ -128,6 +133,8 @@
 }
 
 .cross {
+    border: none;
+    outline: none;
     padding: 0.8rem 1rem;
     display: inline;
     position: absolute;
@@ -135,5 +142,10 @@
     right: -1px;
     border-bottom-left-radius: 15px;
     cursor: pointer;
+    background-color: transparent;
+}
+
+.cross:hover,
+.cross:focus {
     background: var(--primary-bg-color);
 }

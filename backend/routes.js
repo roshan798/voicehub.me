@@ -16,5 +16,6 @@ router.get('/rooms', authMiddleware, roomsController.index);
 router.get('/rooms/:roomId', authMiddleware, roomsController.show);
 
 router.put('/users', authMiddleware, authController.updateProfile);
+router.delete('/rooms/:roomId',authMiddleware,roomsController.deleteRoom)
 
 export default router;

@@ -11,6 +11,8 @@ import styles from "./Room.module.css";
 import Tooltip from "../../components/shared/Tooltip/Tooltip.jsx";
 import MenuIcon from "../../assets/icons/MenuIcon.jsx";
 import LeaveIcon from "../../assets/icons/LeaveIcon.jsx";
+import RequestApprovalPage from "../RequestApprovalPage/RequestApprovalPage.jsx";
+import RequestsMenu from "./RequestsMenu.jsx";
 
 export default function Room() {
     const navigate = useNavigate();
@@ -18,8 +20,16 @@ export default function Room() {
     const [room, setRoom] = useState(null);
     const [isMute, setMute] = useState(true);
     const { user } = useSelector((state) => state.authSlice);
-    const { clients, handleMute, provideRef } = useWebRTC(roomId, user);
-
+    const {
+        clients,
+        handleMute,
+        provideRef,
+        approvedTojoin,
+        joinRequests,
+        setJoinRequests,
+    } = useWebRTC(roomId, user);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    // console.log("inside Room", joinRequests);
     const handleManualLeave = () => {
         navigate("/rooms");
     };
@@ -31,7 +41,7 @@ export default function Room() {
 
     useEffect(() => {
         handleMute(isMute, user.id);
-    }, [isMute, user.id]);
+    }, [isMute]);
 
     useEffect(() => {
         try {
@@ -60,14 +70,24 @@ export default function Room() {
                     url: window.location.href,
                 });
                 // add the toastify
-                console.log("Share successful!");
+                // console.log("Share successful!");
             } catch (error) {
                 console.error("Error sharing:", error);
             }
         } else {
-            console.log("Web Share API not supported in this browser.");
+            console.warn("Web Share API not supported in this browser.");
         }
     };
+    // console.log(approvedTojoin);
+    if (!approvedTojoin) {
+        return (
+            <RequestApprovalPage
+                roomId={roomId}
+                user={user}
+                room={room}
+            />
+        );
+    }
 
     return (
         <div className={styles.mainContainer}>
@@ -91,16 +111,6 @@ export default function Room() {
                     <div className={`${styles.topRight} ${styles.actions}`}>
                         <Tooltip
                             position="bottom"
-                            text="Leave room">
-                            <button
-                                onClick={handleManualLeave}
-                                className={`${styles.btnWithIcon} ${styles.btn} transition`}>
-                                <span className={styles.handIcons}>✌️</span>
-                                {/* <span>Leave quietly</span> */}
-                            </button>
-                        </Tooltip>
-                        <Tooltip
-                            position="left"
                             text="Add others">
                             <button
                                 onClick={handleShare}
@@ -118,6 +128,15 @@ export default function Room() {
                                     src={shareIcon}
                                     alt="share"
                                 />
+                            </button>
+                        </Tooltip>
+                        <Tooltip
+                            position="bottom"
+                            text="Leave room">
+                            <button
+                                onClick={handleManualLeave}
+                                className={`${styles.btnWithIcon} ${styles.btn} transition`}>
+                                <span className={styles.handIcons}>✌️</span>
                             </button>
                         </Tooltip>
                     </div>
@@ -174,25 +193,38 @@ export default function Room() {
                         <LeaveIcon />
                     </button>
                 </Tooltip>
-                {/* <Tooltip
-                    text="Option 3"
-                    position="top">
-                    <button
-                        className={styles.optionBtn}
-                        title="Option 3">
-                        <MenuIcon />
-                    </button>
-                </Tooltip>
-                <Tooltip
-                    text="Menu"
-                    position="top">
-                    <button
-                        className={styles.optionBtn}
-                        title="Menu">
-                        <MenuIcon />
-                    </button>
-                </Tooltip> */}
             </div>
+
+            {joinRequests.length > 0 && (
+                <div className={styles.requestsContainer}>
+                    <div
+                        className={`${
+                            joinRequests.length > 0 ? styles.newRequest : ""
+                        }`}
+                        style={{
+                            position: "relative",
+                        }}>
+                        <div className={styles.requestsHeader}>
+                            <button
+                                onClick={() => {
+                                    // console.log(isMenuOpen);
+                                    setIsMenuOpen(!isMenuOpen);
+                                }}
+                                className={styles.menuBtn}>
+                                <MenuIcon />
+                            </button>
+                        </div>
+                        {isMenuOpen && (
+                            <RequestsMenu
+                                styles={styles}
+                                joinRequests={joinRequests}
+                                setJoinRequests={setJoinRequests}
+                                roomId={room.id}
+                            />
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

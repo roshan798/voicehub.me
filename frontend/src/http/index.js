@@ -26,16 +26,20 @@ export const logout = (data) => {
 export const createRoom = (data) => {
     return api.post('api/v1/rooms', data)
 }
-export const getAllRooms = async (page = 1, resultsPerPage = 6) => {
+export const getAllRooms = async (page = 1, resultsPerPage = 6, roomType = ["open"]) => {
     return await api.get(`api/v1/rooms`, {
         params: {
             page,
             resultsPerPage,
+            roomType: roomType.join(".")
         },
     });
 };
 export const getRoom = (roomId) => {
     return api.get(`api/v1/rooms/${roomId}`);
+}
+export const deleteRoom = (roomId) => {
+    return api.delete(`api/v1/rooms/${roomId}`);
 }
 export const updateProfile = (data) => {
     return api.put('api/v1/users', data);
