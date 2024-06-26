@@ -7,6 +7,13 @@ export const ACTIONS = {
     ICE_CANDIDATE: 'ice-candidate',
     SESSION_DESCRIPTION: 'session-description',
     REMOVE_PEER: 'remove-peer',
-    MUTE : 'mute',
-    UNMUTE : 'unmute',
+    MUTE: 'mute',
+    UNMUTE: 'unmute',
+    JOIN_REQUEST: 'join-request',
+    APPROVE_JOIN_REQUEST: 'approve-join-request',
+    JOIN_APPROVED: "join-approved",
+    JOIN_CANCELLED: "join-cancelled",
+    USER_APPROVED: "user-approved",
+    ROOM_NOT_FOUND: "room-not_found",
+    USER_NOT_ALLOWED: "user-not-allowed"
 }

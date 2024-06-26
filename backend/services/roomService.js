@@ -4,16 +4,31 @@ import roomModal from "../Models/roomModal.js";
 class RoomService {
     async create(payload) {
         const { topic, roomType, ownerId } = payload;
-        const room = await roomModal.create(
-            {
-                topic,
-                roomType,
-                ownerId,
-                speakers: [ownerId]
-            }
-        );
+
+        const roomData = {
+            topic,
+            roomType,
+            ownerId,
+            speakers: [ownerId],
+        };
+
+        // Add owner to approvedUsers for social and private rooms
+        if (roomType === 'social' || roomType === 'private') {
+            roomData.approvedUsers = [ownerId];
+        }
+        const room = await roomModal.create(roomData);
         return room;
     }
+    async deleteRoom(roomId) {
+        try {
+            return await roomModal.deleteOne({ _id: roomId })
+        }
+        catch (e) {
+            console.log(e)
+            throw e;
+        }
+    }
+
     async addUserToRoom(roomId, userId) {
         // Retrieve the room from the database based on the roomId
         const room = await roomModal.findById(roomId);
@@ -27,23 +42,19 @@ class RoomService {
 
     async removeUserFromRoom(roomId, userId) {
         try {
-            // Retrieve the room from the database based on the roomId
             const room = await roomModal.findById(roomId);
-            // If the room is found, remove the userId from the speakers array
             if (room) {
                 room.speakers = room.speakers.filter(speaker => {
-                    // Filter out the userId from the speakers array
-                    return speaker.toString() !== userId.toString();
+                    return speaker && userId && speaker.toString() !== userId.toString();
                 });
                 await room.save();
             }
-            return room; // Return the updated room
+            return room;
         } catch (error) {
             console.error("Error removing user from room:", error);
             throw error;
         }
     }
-
 
     async getAllRooms(types, limit, skip) {
         const rooms = await roomModal.find({
@@ -75,6 +86,13 @@ class RoomService {
         } catch (error) {
             throw new Error("Error occurred while getting the room. Please try again later.");
         }
+    }
+
+    updateOwnerSocketId(roomId, socketId) {
+        return roomModal.updateOne({ _id: roomId }, { ownerSocketId: socketId });
+    }
+    addUserToApprovedList(roomId, userId) {
+        return roomModal.updateOne({ _id: roomId }, { $push: { approvedUsers: userId } });
     }
 }
 

@@ -14,6 +14,7 @@ class RoomDto {
         this.speakers = room.speakers;
         this.owner = new UserDto(room.ownerId);
         this.speakers = room.speakers.map((speaker) => new UserDto(speaker));
+        
         // this.createdAt = room.createdAt;
     }
 }

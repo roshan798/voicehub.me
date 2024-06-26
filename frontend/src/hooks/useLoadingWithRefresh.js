@@ -17,12 +17,10 @@ export function useLoadingWithRefresh() {
                 dispatch(setAuth({ data: data }))
                 setLoading(false);
             } catch (error) {
-                console.log(error);
+                console.error('Error fetching refresh token:', error);
                 setLoading(false);
             }
-
         })();
-    }, [])
-    
-    return {Loading};
+    }, []); // Added dispatch to dependency array for safety
+    return { Loading };
 }

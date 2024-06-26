@@ -4,27 +4,48 @@ class RoomsController {
     async create(req, res) {
         const { topic, roomType } = req.body;
         if (!topic || !roomType) {
-
-            return res.status(401).json({
+            return res.status(400).json({
+                success: false,
                 message: "All fields are required"
             });
         }
-        const room = await roomService.create({
-            topic,
-            roomType,
-            ownerId: req.user._id,
-        });
-        return res.json(new RoomDto(room));
+
+        // Validate roomType
+        const validRoomTypes = ['open', 'social', 'private'];
+        if (!validRoomTypes.includes(roomType)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid room type. Valid types are 'open', 'social', 'private'."
+            });
+        }
+
+        // Create the room
+        try {
+            const room = await roomService.create({
+                topic,
+                roomType,
+                ownerId: req.user._id,
+            });
+
+            return res.status(201).json(new RoomDto(room));
+        } catch (error) {
+            return res.status(500).json({
+                message: "Error creating room",
+                error: error.message
+            });
+        }
     }
+
 
     async index(req, res) {
         const resultsPerPage = parseInt(req.query.resultsPerPage) || 6; // Default to 10 results per page if not specified
         const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+        const { roomType } = req.query;
 
         const limit = resultsPerPage;
         const skip = (page - 1) * resultsPerPage;
 
-        const types = ['open'];
+        const types = roomType ? roomType.split(".") : ['open'];
         const rooms = await roomService.getAllRooms(types, limit, skip);
         const allRooms = rooms.map(room => new RoomDto(room));
 
@@ -46,6 +67,28 @@ class RoomsController {
             return res.json(new RoomDto(room));
         } catch (error) {
             return res.json({
+                error: error.message
+            });
+        }
+    }
+    async deleteRoom(req, res) {
+        const roomId = req.params.roomId;
+        const user = req.user;
+        try {
+            // check if the user is the owner then only delete the room
+            const room = await roomService.getRoom(roomId);
+            if (room.ownerId.toString() !== user._id) {
+                return res.status(401).json({
+                    message: "You are not authorized to delete this room"
+                });
+            }
+            await roomService.deleteRoom(roomId);
+            return res.json({
+                success: true,
+                message: "Room deleted successfully"
+            });
+        } catch (error) {
+            return res.status(400).json({
                 error: error.message
             });
         }
