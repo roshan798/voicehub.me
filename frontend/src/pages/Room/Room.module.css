@@ -54,7 +54,7 @@
 .clientsContainer {
     background-color: var(--secondary-bg-color);
     padding: 1.5rem;
-    min-height: calc(100vh - 135px);
+    min-height: calc(100vh - 130px);
 }
 
 .topContainer {
@@ -145,13 +145,13 @@
     justify-content: center;
     align-items: center;
     position: fixed;
-    gap: 2px;
+    gap: 4px;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--primary-bg-color);
-    padding: 2px 10px;
-    border-radius: 10px;
+    padding: 5px;
+    border-radius: 999px;
     box-shadow: 0 4px 8px var(--primary-bg-color);
     z-index: 1000;
 }

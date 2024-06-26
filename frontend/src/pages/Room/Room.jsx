@@ -10,6 +10,7 @@ import shareIcon from "../../assets/shareIcon.svg";
 import styles from "./Room.module.css";
 import Tooltip from "../../components/shared/Tooltip/Tooltip.jsx";
 import MenuIcon from "../../assets/icons/MenuIcon.jsx";
+import LeaveIcon from "../../assets/icons/LeaveIcon.jsx";
 
 export default function Room() {
     const navigate = useNavigate();
@@ -30,7 +31,7 @@ export default function Room() {
 
     useEffect(() => {
         handleMute(isMute, user.id);
-    }, [isMute,user.id]);
+    }, [isMute, user.id]);
 
     useEffect(() => {
         try {
@@ -165,15 +166,15 @@ export default function Room() {
                     </button>
                 </Tooltip>
                 <Tooltip
-                    text="Option 2"
+                    text="Leave room"
                     position="top">
                     <button
-                        className={styles.optionBtn}
-                        title="Option 2">
-                        <MenuIcon />
+                        onClick={handleManualLeave}
+                        className={styles.optionBtn}>
+                        <LeaveIcon />
                     </button>
                 </Tooltip>
-                <Tooltip
+                {/* <Tooltip
                     text="Option 3"
                     position="top">
                     <button
@@ -190,7 +191,7 @@ export default function Room() {
                         title="Menu">
                         <MenuIcon />
                     </button>
-                </Tooltip>
+                </Tooltip> */}
             </div>
         </div>
     );
