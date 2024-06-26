@@ -54,7 +54,7 @@
 .clientsContainer {
     background-color: var(--secondary-bg-color);
     padding: 1.5rem;
-    min-height: calc(100vh - 135px);
+    min-height: calc(100vh - 130px);
 }
 
 .topContainer {
@@ -73,7 +73,6 @@
 .handIcons,
 .actions {
     font-size: 1.3rem;
-
 }
 
 .topRight,
@@ -138,10 +137,52 @@
     border: 2px solid var(--success);
 }
 
+/*  */
+/* Existing styles omitted for brevity */
+
+.optionsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    gap: 4px;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary-bg-color);
+    padding: 5px;
+    border-radius: 999px;
+    box-shadow: 0 4px 8px var(--primary-bg-color);
+    z-index: 1000;
+}
+
+.optionBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.optionBtn img {
+    width: 24px;
+    height: 24px;
+    filter: invert(1);
+}
+
+.optionBtn:hover {
+    background: var(--secondary-bg-color);
+}
+
+/* Adjust existing styles as needed */
+
+/*  */
 @media screen and (max-width: 768px) {
-    .handIcons {
-        display: none;
-    }
 
     .roomTitle {
         font-size: 1.3rem;

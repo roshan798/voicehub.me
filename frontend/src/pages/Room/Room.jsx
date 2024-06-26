@@ -6,8 +6,11 @@ import { getRoom } from "../../http/index.js";
 import ArrowForward from "../../assets/Images/Arrow forward.png";
 import muteIcon from "../../assets/Images/mute.png";
 import unmuteIcon from "../../assets/Images/unmute.png";
-import styles from "./Room.module.css";
 import shareIcon from "../../assets/shareIcon.svg";
+import styles from "./Room.module.css";
+import Tooltip from "../../components/shared/Tooltip/Tooltip.jsx";
+import MenuIcon from "../../assets/icons/MenuIcon.jsx";
+import LeaveIcon from "../../assets/icons/LeaveIcon.jsx";
 
 export default function Room() {
     const navigate = useNavigate();
@@ -16,18 +19,19 @@ export default function Room() {
     const [isMute, setMute] = useState(true);
     const { user } = useSelector((state) => state.authSlice);
     const { clients, handleMute, provideRef } = useWebRTC(roomId, user);
+
     const handleManualLeave = () => {
         navigate("/rooms");
     };
 
-    const handleMuteClick = (clientId, clientMute) => {
+    const handleMuteClick = (clientId) => {
         if (clientId !== user.id) return;
         setMute((isMuted) => !isMuted);
     };
 
     useEffect(() => {
         handleMute(isMute, user.id);
-    }, [isMute]);
+    }, [isMute, user.id]);
 
     useEffect(() => {
         try {
@@ -45,7 +49,7 @@ export default function Room() {
             console.error("Error fetching room:", error);
             navigate("/error");
         }
-    }, [roomId]);
+    }, [navigate, roomId]);
 
     const handleShare = async () => {
         if (navigator.share) {
@@ -85,29 +89,37 @@ export default function Room() {
                         {room?.topic}
                     </div>
                     <div className={`${styles.topRight} ${styles.actions}`}>
-                        <button
-                            onClick={handleManualLeave}
-                            className={`${styles.btnWithIcon} ${styles.btn} transition`}>
-                            <span className={styles.handIcons}>✌️</span>
-                            <span>Leave quietly</span>
-                        </button>
-                        <button
-                            onClick={handleShare}
-                            className={`${styles.btn} transition`}
-                            title="share"
-                            style={{
-                                display: "grid",
-                                placeItems: "center",
-                                padding: "8px",
-                            }}>
-                            <img
+                        <Tooltip
+                            position="bottom"
+                            text="Leave room">
+                            <button
+                                onClick={handleManualLeave}
+                                className={`${styles.btnWithIcon} ${styles.btn} transition`}>
+                                <span className={styles.handIcons}>✌️</span>
+                                {/* <span>Leave quietly</span> */}
+                            </button>
+                        </Tooltip>
+                        <Tooltip
+                            position="left"
+                            text="Add others">
+                            <button
+                                onClick={handleShare}
+                                className={`${styles.btn} transition`}
+                                title="Send an invite"
                                 style={{
-                                    filter: "invert(1)",
-                                }}
-                                src={shareIcon}
-                                alt="share"
-                            />
-                        </button>
+                                    display: "grid",
+                                    placeItems: "center",
+                                    padding: "8px",
+                                }}>
+                                <img
+                                    style={{
+                                        filter: "invert(1)",
+                                    }}
+                                    src={shareIcon}
+                                    alt="share"
+                                />
+                            </button>
+                        </Tooltip>
                     </div>
                 </div>
                 <div className={styles.clientsList}>
@@ -120,36 +132,12 @@ export default function Room() {
                                           ? styles.owner
                                           : ""
                                   }`}>
-                                  <div
-                                      className={styles.avatarWrapper}
-                                      onClick={() => {
-                                          handleMuteClick(
-                                              client.id,
-                                              client.muted
-                                          );
-                                      }}>
+                                  <div className={styles.avatarWrapper}>
                                       <img
                                           src={client.avatar}
                                           alt={`${client.name} avatar`}
                                           className={styles.avatar}
                                       />
-                                      {client.muted ? (
-                                          <button
-                                              className={styles.muteUnmuteBtn}>
-                                              <img
-                                                  src={muteIcon}
-                                                  alt="Mute"
-                                              />
-                                          </button>
-                                      ) : (
-                                          <button
-                                              className={styles.muteUnmuteBtn}>
-                                              <img
-                                                  src={unmuteIcon}
-                                                  alt="Unmute"
-                                              />
-                                          </button>
-                                      )}
                                   </div>
                                   <audio
                                       ref={(instance) => {
@@ -161,6 +149,49 @@ export default function Room() {
                           ))
                         : ""}
                 </div>
+            </div>
+            <div
+                id="options"
+                className={styles.optionsContainer}>
+                <Tooltip
+                    text={!isMute ? "Mute" : "Unmute"}
+                    position="top">
+                    <button
+                        onClick={() => handleMuteClick(user.id)}
+                        className={styles.optionBtn}>
+                        <img
+                            src={isMute ? muteIcon : unmuteIcon}
+                            alt={isMute ? "Mute" : "Unmute"}
+                        />
+                    </button>
+                </Tooltip>
+                <Tooltip
+                    text="Leave room"
+                    position="top">
+                    <button
+                        onClick={handleManualLeave}
+                        className={styles.optionBtn}>
+                        <LeaveIcon />
+                    </button>
+                </Tooltip>
+                {/* <Tooltip
+                    text="Option 3"
+                    position="top">
+                    <button
+                        className={styles.optionBtn}
+                        title="Option 3">
+                        <MenuIcon />
+                    </button>
+                </Tooltip>
+                <Tooltip
+                    text="Menu"
+                    position="top">
+                    <button
+                        className={styles.optionBtn}
+                        title="Menu">
+                        <MenuIcon />
+                    </button>
+                </Tooltip> */}
             </div>
         </div>
     );

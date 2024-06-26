@@ -122,7 +122,7 @@ io.on('connection', (socket) => {
     });
 });
 
-app.use(router);
+app.use("/api/v1", router);
 router.get('/', (req, res) => {
     res.json({
         msg: 'Welcome to coders house',
