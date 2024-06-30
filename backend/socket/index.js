@@ -17,22 +17,18 @@ const initilizeSocket = (server) => {
     const socketUserMapping = new Map();
     // Handle socket connections
     io.on('connection', (socket) => {
-        console.log("new connection", socket.id);
         // Handle joining a room
         socket.on(ACTIONS.JOIN, async ({ roomId, user }) => {
-            // console.log("ACTION.JOIN");
             try {
                 socketUserMapping.set(socket.id, user);
                 const room = await RoomService.getRoom(roomId);
                 if (!room) {
                     return socket.emit(ACTIONS.ROOM_NOT_FOUND);
                 }
-                // console.log(room, user);
                 // first implement this on frontend
                 const userIdObj = new ObjectId(user.id);
                 if (room.roomType === 'social' && !room.approvedUsers.includes(userIdObj)) {
                     // If user is not approved, send join request to the owner
-                    // console.log("user is not in the approved list ");
                     socket.emit(ACTIONS.USER_NOT_ALLOWED, {
                         roomId,
                         user
@@ -42,7 +38,6 @@ const initilizeSocket = (server) => {
 
                 // the current user is the owner of the room then add it's socket id to db
                 if (room.ownerId.toString() === user.id) {
-                    // console.log("owner of the room stored socket");
                     await RoomService.updateOwnerSocketId(roomId, socket.id);
                 }
 
@@ -120,7 +115,6 @@ const initilizeSocket = (server) => {
                 if (from == "leave") {
                     const room = await RoomService.getRoom(roomId);
                     if (room.ownerId.toString() === userId) {
-                        // console.log("owner of the room deleted socket");
                         await RoomService.updateOwnerSocketId(roomId, null);
                     }
                 }
@@ -154,7 +148,6 @@ const initilizeSocket = (server) => {
         };
 
         socket.on(ACTIONS.JOIN_REQUEST, async ({ roomId, user }) => {
-            // console.log("got a room join req");
             try {
                 const room = await RoomService.getRoom(roomId);
                 if (!room) {
@@ -166,7 +159,6 @@ const initilizeSocket = (server) => {
                 }
 
                 const ownerSocketId = findOwnerSocketId();
-                // console.log("ownerSocketId: " + ownerSocketId);
                 if (ownerSocketId) {
                     io.to(ownerSocketId).emit(ACTIONS.APPROVE_JOIN_REQUEST, { roomId, user });
                 } else {
@@ -179,7 +171,6 @@ const initilizeSocket = (server) => {
         });
 
         socket.on(ACTIONS.APPROVE_JOIN_REQUEST, async ({ roomId, userId }) => {
-            // console.log("211 server.js");
             try {
                 await RoomService.addUserToApprovedList(roomId, userId);
                 const userSocketId = Array.from(socketUserMapping.entries()).find(([key, value]) => value.id === userId)?.[0];
@@ -196,11 +187,9 @@ const initilizeSocket = (server) => {
 
         socket.on(ACTIONS.JOIN_APPROVED, async ({ userId, roomId }) => {
             // add into the approved list of the room ino the db
-            // console.log("JOIN APPROVED CALLED 230");
             try {
                 await RoomService.addUserToApprovedList(roomId, userId);
                 const userSocketId = Array.from(socketUserMapping.entries()).find(([key, value]) => value.id === userId)?.[0];
-                // console.log("235 userSocketId ", userSocketId);
                 if (userSocketId) {
                     return io.to(userSocketId).emit(ACTIONS.JOIN_APPROVED, { roomId });
                 }

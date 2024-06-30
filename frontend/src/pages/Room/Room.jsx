@@ -168,6 +168,7 @@ export default function Room() {
                                       ref={(instance) => {
                                           provideRef(instance, client.id);
                                       }}
+                                      muted={client.muted}
                                   />
                                   <h4>{client.name.split(" ")[0]}</h4>
                               </div>

@@ -4,21 +4,55 @@ import chatIcon from "../../assets/Images/chatIcon.png";
 import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
 import { useNavigate } from "react-router-dom";
 import MenuIcon from "../../assets/icons/MenuIcon";
-import { useState } from "react";
 
-
-export default function RoomCard({ room, deleteRoom }) {
+export default function RoomCard({
+    room,
+    deleteRoom,
+    showCardMenu,
+    setCardShowMenu,
+}) {
     const { topic: title, speakers, owner, id: roomId } = room;
-    const [showModal, setShowModal] = useState(false); // Initially false
+    const { show, roomId: modalRoomId } = showCardMenu;
     const navigate = useNavigate();
     const handleMenuClick = (event) => {
         event.stopPropagation(); // Prevent navigation
-        setShowModal(!showModal);
+        setCardShowMenu(() => {
+            if (modalRoomId == roomId) {
+                return {
+                    show: !show,
+                    roomId: null,
+                };
+            }
+            return {
+                show: true,
+                roomId,
+            };
+        });
+    };
+
+    const handleShare = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: room?.topic || "Join my voice room",
+                    text: "Join me in this voice room!",
+                    url: `${window.location.origin}/room/${roomId}`,
+                });
+                // add the toastify
+            } catch (error) {
+                console.error("Error sharing:", error);
+            }
+        } else {
+            console.warn("Web Share API not supported in this browser.");
+        }
     };
 
     return (
         <>
-            <div className={`${styles.card} transition`}>
+            <div
+                className={`${styles.card} transition ${
+                    modalRoomId == roomId ? styles.activeCard : ""
+                }`}>
                 <div
                     className={styles.cardLeft}
                     onClick={() => {
@@ -71,9 +105,40 @@ export default function RoomCard({ room, deleteRoom }) {
                             onClick={handleMenuClick}>
                             <MenuIcon />
                         </button>
-                        {showModal && (
-                            <div className={styles.modal}>
-                                <button onClick={() => deleteRoom(room.id)}>
+                        {show && modalRoomId == roomId && (
+                            <div className={styles.roomCardModal}>
+                                {/* Room details */}
+                                <button
+                                    className={styles.modalButton}
+                                    onClick={() => {
+                                        navigate(`/room/${roomId}`);
+                                    }}>
+                                    Go to Room
+                                </button>
+                                <button
+                                    className={styles.modalButton}
+                                    onClick={() => {
+                                        handleShare();
+                                        setCardShowMenu({
+                                            roomId: null,
+                                            show: false,
+                                        });
+                                    }}>
+                                    Invite
+                                </button>
+                                <button
+                                    className={styles.modalButton}
+                                    onClick={() =>
+                                        setCardShowMenu({
+                                            roomId: null,
+                                            show: false,
+                                        })
+                                    }>
+                                    Close
+                                </button>
+                                <button
+                                    className={`${styles.modalButton} ${styles.deleteButton}`}
+                                    onClick={() => deleteRoom(room.id)}>
                                     Delete Room
                                 </button>
                             </div>
