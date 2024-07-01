@@ -34,11 +34,12 @@ export default function AddRoomModal({ toggleModal }) {
                         X
                     </button>
                     <div className={styles.modalHeader}>
-                        <h3>Enter a topic to be disscussed</h3>
+                        <h3>Enter a topic to be discussed</h3>
                         <input
                             type="text"
                             className={styles.inputBox}
                             value={topic}
+                            placeholder="Enter topic"
                             onChange={(e) => {
                                 setTopic(e.target.value);
                             }}
@@ -99,7 +100,7 @@ export default function AddRoomModal({ toggleModal }) {
                                 alt="arrow-forward"
                                 className={styles.arrowForward}
                             />
-                            Let's Go
+                            Let&apos;s Go
                         </button>
                     </div>
                 </div>
