@@ -1,8 +1,7 @@
 import { lazy, Suspense } from "react";
 import "./App.css";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Navigation from "./components/shared/Navigation/Navigation.jsx";
-import { useSelector } from "react-redux";
 import { useLoadingWithRefresh } from "./hooks/useLoadingWithRefresh.js";
 import Loader from "./components/shared/Loader/Loader.jsx";
 import { ToastContainer } from "react-toastify";
@@ -20,6 +19,7 @@ const Room = lazy(() => import("./pages/Room/Room.jsx"));
 const Activate = lazy(() => import("./pages/Activate/Activate.jsx"));
 const Profile = lazy(() => import("./pages/profile/Profile.jsx"));
 const Error404 = lazy(() => import("./pages/Error/Error404.jsx"));
+
 
 function App() {
     const { Loading } = useLoadingWithRefresh();

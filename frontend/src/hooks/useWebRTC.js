@@ -34,33 +34,38 @@ export function useWebRTC(roomId, user) {
 
 	// start Capture
 	const startCapture = async () => {
-		// console.log(" 57 start capture");
 		try {
 			localMediaStream.current = await navigator.mediaDevices.getUserMedia({
-				audio: true,
+				audio: {
+					echoCancellation: true,  // Enable echo cancellation
+					noiseSuppression: true, // Enable noise suppression
+					autoGainControl: true,  // Enable automatic gain control
+				},
 			});
 
 			addNewClient({ ...user, muted: true }, () => {
 				const localElement = audioElements.current[user.id];
 				if (localElement) {
-					localElement.volume = 0;
+					// localElement.volume = 0;
 					localElement.srcObject = localMediaStream.current;
 				}
+				// Ensure the local audio is muted
+				localMediaStream.current.getAudioTracks().forEach((track) => {
+					track.enabled = false; // Mute the audio
+				});
 
 				// Socket emit JOIN
 				socket.current.emit(ACTIONS.JOIN, { roomId, user });
 			});
 		} catch (error) {
-			// Handle media stream capture errors
 			console.error('Error accessing user media:', error);
-			// You may want to provide user feedback or trigger a fallback mechanism
+			showToastMessage("error", "Failed to access media devices. Please check your permissions.");
 		}
 	};
 
 	// 
 	// Stop Capture local media stream
 	const stopCaptureAndLeave = () => {
-		// console.log('Leaving room')
 		if (localMediaStream.current && localMediaStream.current.getTracks) {
 			localMediaStream.current.getTracks().forEach((track) => {
 				track.stop();
@@ -256,19 +261,14 @@ export function useWebRTC(roomId, user) {
 
 	useEffect(() => {
 		if (approvedTojoin) {
-			// console.log("start capture started");
 			startCapture();
-		}
-		else {
-			// console.log("start capture not started");
 		}
 		// Cleanup when leaving the room
 		return stopCaptureAndLeave;
-	}, [addNewClient, roomId, user]);
+	}, [approvedTojoin, addNewClient, roomId, user]);
 
 	useEffect(() => {
 		clientsRef.current = clients;
-		// console.log("277 clients", clients);
 	}, [clients]);
 
 	// Provide reference to audio elements
@@ -285,13 +285,8 @@ export function useWebRTC(roomId, user) {
 				if (audioTrack) {
 					audioTrack.enabled = !isMute;
 				}
-
-				if (isMute) {
-					// Tell other clients that I have muted
-					socket.current.emit(ACTIONS.MUTE, { roomId, userId });
-				} else {
-					socket.current.emit(ACTIONS.UNMUTE, { roomId, userId });
-				}
+				if (isMute === true) socket.current.emit(ACTIONS.MUTE, { roomId, userId });
+				else socket.current.emit(ACTIONS.UNMUTE, { roomId, userId });
 
 				settled = true;
 			}

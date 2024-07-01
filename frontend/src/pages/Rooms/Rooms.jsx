@@ -18,6 +18,10 @@ export default function Rooms() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const roomsCopy = useRef([]);
+    const [showCardMenu, setCardShowMenu] = useState({
+        show: false,
+        roomId: null,
+    });
 
     // Fetch rooms when the component mounts or page changes
     useEffect(() => {
@@ -60,6 +64,8 @@ export default function Rooms() {
     };
 
     const deleteRoom = async (roomId) => {
+        if (confirm("Are you sure, youwant to delete this room?") === false)
+            return;
         try {
             const { data } = await deleteRoomAPI(roomId);
             if (data.success) {
@@ -122,6 +128,8 @@ export default function Rooms() {
                                 room={room}
                                 deleteRoom={deleteRoom}
                                 key={index}
+                                showCardMenu={showCardMenu}
+                                setCardShowMenu={setCardShowMenu}
                             />
                         ))
                     ) : (

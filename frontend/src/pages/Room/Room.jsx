@@ -29,7 +29,6 @@ export default function Room() {
         setJoinRequests,
     } = useWebRTC(roomId, user);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    // console.log("inside Room", joinRequests);
     const handleManualLeave = () => {
         navigate("/rooms");
     };
@@ -57,7 +56,14 @@ export default function Room() {
             fetchRoom();
         } catch (error) {
             console.error("Error fetching room:", error);
-            navigate("/error");
+            navigate("/error", {
+                state: {
+                    error:
+                        error.message ||
+                        "The Room you are looking for is currently not availble",
+                    to: "/rooms",
+                },
+            });
         }
     }, [navigate, roomId]);
 
@@ -162,6 +168,7 @@ export default function Room() {
                                       ref={(instance) => {
                                           provideRef(instance, client.id);
                                       }}
+                                      muted={client.muted}
                                   />
                                   <h4>{client.name.split(" ")[0]}</h4>
                               </div>
