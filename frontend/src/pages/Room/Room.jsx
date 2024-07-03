@@ -84,7 +84,6 @@ export default function Room() {
             console.warn("Web Share API not supported in this browser.");
         }
     };
-    // console.log(approvedTojoin);
     if (!approvedTojoin) {
         return (
             <RequestApprovalPage
@@ -153,7 +152,7 @@ export default function Room() {
                               <div
                                   key={client.id}
                                   className={`${styles.clientWrapper} ${
-                                      room.owner.id === client.id
+                                      room?.owner?.id === client?.id
                                           ? styles.owner
                                           : ""
                                   }`}>

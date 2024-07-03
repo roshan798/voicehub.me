@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { getAllRooms } from "../../http/index.js";
 import debounce from "../../utils/debounceFunction.js";
 import styles from "./Rooms.module.css";
-import searchIcon from "../../assets/Images/search.png";
+import SearchIcon from "../../assets/icons/SearchIcon.jsx";
 import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
 import RoomCard from "../../components/RoomCard/RoomCard";
 import AddRoomModal from "../../components/AddRoomModal/AddRoomModal";
@@ -64,7 +64,7 @@ export default function Rooms() {
     };
 
     const deleteRoom = async (roomId) => {
-        if (confirm("Are you sure, youwant to delete this room?") === false)
+        if (confirm("Are you sure, you want to delete this room?") === false)
             return;
         try {
             const { data } = await deleteRoomAPI(roomId);
@@ -95,11 +95,7 @@ export default function Rooms() {
                         <p className={styles.headingText}>All voice rooms</p>
                         <div className={styles.searchBox}>
                             <label htmlFor="search-box">
-                                <img
-                                    src={searchIcon}
-                                    alt=""
-                                    className={styles.searchIcon}
-                                />
+                                <SearchIcon />
                             </label>
                             <input
                                 type="text"

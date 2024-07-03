@@ -52,12 +52,15 @@ export default function RoomCard({
             <div
                 className={`${styles.card} transition ${
                     modalRoomId == roomId ? styles.activeCard : ""
-                }`}>
+                }`}
+                aria-label={title}
+            >
                 <div
                     className={styles.cardLeft}
                     onClick={() => {
                         navigate(`/room/${roomId}`);
-                    }}>
+                    }}
+                >
                     <p className={styles.title}>{title}</p>
                     <div className={styles.detailsContainer}>
                         <div className={styles.avatarContainer}>
