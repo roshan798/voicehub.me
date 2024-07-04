@@ -63,7 +63,7 @@ export default function RoomCard({
                     <p className={styles.title}>{title}</p>
                     <div className={styles.detailsContainer}>
                         <div className={styles.avatarContainer}>
-                            <img
+                            {/* <img
                                 src={
                                     speakers.length
                                         ? speakers[0].avatar
@@ -74,12 +74,20 @@ export default function RoomCard({
                                         ? speakers[0].name
                                         : owner.name
                                 }
-                            />
+                            /> */}
+                            <div
+                                style={{
+                                    background: `url(${
+                                        speakers.length
+                                            ? speakers[0].avatar
+                                            : owner.avatar
+                                    }) no-repeat center center/cover`,
+                                }}></div>
                             {speakers.length >= 2 && (
-                                <img
-                                    src={speakers[1].avatar}
-                                    alt=""
-                                />
+                                <div
+                                    style={{
+                                        background: `url(${speakers[1].avatar}) no-repeat center center/cover`,
+                                    }}></div>
                             )}
                         </div>
                         <div className={styles.speakersNames}>

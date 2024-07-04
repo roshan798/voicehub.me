@@ -69,10 +69,9 @@
     position: relative;
     width: 80px;
     height: 80px;
-
 }
 
-.avatarContainer img {
+.avatarContainer div {
     aspect-ratio: 1/1;
     width: 46px;
     border-radius: 50%;
@@ -81,12 +80,12 @@
     border: 1px solid white !important;
 }
 
-.avatarContainer img:nth-child(1) {
-    box-shadow: var(--success) 0px 0px 0px 3px;
+.avatarContainer div:nth-child(1) {
+    box-shadow: var(--success) 0px 0px 0px 2px;
 }
 
-.avatarContainer img:nth-child(2) {
-    box-shadow: var(--primary-button-bg) 0px 0px 0px 3px;
+.avatarContainer div:nth-child(2) {
+    box-shadow: var(--primary-button-bg) 0px 0px 0px 2px;
     top: 22px;
     left: 22px;
 }
