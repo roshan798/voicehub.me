@@ -106,7 +106,6 @@
 
 .menu {
     position: relative;
-    padding: 0;
     text-align: center;
     cursor: pointer;
     width: 100%;
@@ -115,7 +114,7 @@
     outline: none;
     border: none;
     border-radius: 8px;
-    padding: 5px 0px;
+    padding: 5px 2px;
     background: transparent;
 }
 

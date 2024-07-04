@@ -3,6 +3,7 @@ import globe from "../../assets/Images/globe.png";
 import group from "../../assets/Images/group.png";
 import lock from "../../assets/Images/lock.png";
 import party from "../../assets/Images/party.png";
+import CancelIcon from "../../assets/icons/CrossIcon";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createRoom as createRoomOnBackend } from "../../http/index";
@@ -31,7 +32,7 @@ export default function AddRoomModal({ toggleModal }) {
                     <button
                         className={styles.cross}
                         onClick={toggleModal}>
-                        X
+                        <CancelIcon />
                     </button>
                     <div className={styles.modalHeader}>
                         <h3>Enter a topic to be discussed</h3>
