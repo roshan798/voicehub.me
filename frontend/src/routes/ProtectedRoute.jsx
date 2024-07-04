@@ -1,13 +1,14 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useLoadingWithRefresh } from "../hooks/useLoadingWithRefresh.js";
+import Loader from "../components/shared/Loader/Loader.jsx";
 
 export default function ProtectedRoute() {
     const { isAuth, user } = useSelector((state) => state.authSlice);
     const { Loading } = useLoadingWithRefresh();
 
     if (Loading) {
-        return <div>Loading...</div>; // or a Loader component
+        return <Loader message={"Loading rooms, please wait!"} />;
     }
 
     if (!isAuth) {
