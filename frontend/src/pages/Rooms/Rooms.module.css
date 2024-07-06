@@ -37,15 +37,30 @@
 
 
 .searchBox {
+    position: relative;
     height: 2.5rem;
     display: flex;
     align-items: center;
     gap: 4px;
     background-color: var(--input-bg-color);
-    padding: 0px 1rem 0px 15px;
+    padding: 0px 2.2rem 0px 15px;
     border-radius: 999px;
     min-width: 150px;
     box-shadow: inset -2px -2px 5px 0 var(--primary-bg-color);
+}
+
+.cancelIcon {
+    position: absolute;
+    right: 0.8rem;
+    cursor: pointer;
+    color: black;
+    border-radius: 50%;
+    padding: 1px;
+    transition: color 0.2s ease-in-out;
+}
+
+.cancelIcon:hover {
+    color: white;
 }
 
 .searchBox input {

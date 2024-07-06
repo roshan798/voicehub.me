@@ -1,9 +1,9 @@
-/* eslint-disable react/prop-types */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { getAllRooms } from "../../http/index.js";
 import debounce from "../../utils/debounceFunction.js";
 import styles from "./Rooms.module.css";
 import SearchIcon from "../../assets/icons/SearchIcon.jsx";
+import CancelIcon from "../../assets/icons/CrossIcon.jsx";
 import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
 import RoomCard from "../../components/RoomCard/RoomCard";
 import AddRoomModal from "../../components/AddRoomModal/AddRoomModal";
@@ -11,10 +11,12 @@ import { deleteRoom as deleteRoomAPI } from "../../http";
 import showToastMessage from "../../utils/showToastMessage.js";
 
 const RESULTS_PER_PAGE = 6;
+const CACHE_SIZE = 5;
 
 export default function Rooms() {
     const [showModal, setShowModal] = useState(false);
     const [rooms, setRooms] = useState([]);
+    const [loadingRooms, setLoadingRooms] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const roomsCopy = useRef([]);
@@ -22,38 +24,73 @@ export default function Rooms() {
         show: false,
         roomId: null,
     });
+    const [searchValue, setSearchValue] = useState("");
 
-    // Fetch rooms when the component mounts or page changes
+    const queue = useRef([]);
+    const roomsCache = useRef(new Map());
+
+    const setData = (data) => {
+        setRooms(data.allRooms);
+        setTotalPages(data.totalPages);
+        roomsCopy.current = data.allRooms;
+    };
+
     useEffect(() => {
         const fetchRooms = async (page) => {
+            setLoadingRooms(true);
             try {
                 const roomType = ["open", "social"];
-                const { data } = await getAllRooms(
-                    page,
-                    RESULTS_PER_PAGE,
-                    roomType
-                );
-                setRooms(data.allRooms);
-                setTotalPages(data.totalPages);
-                roomsCopy.current = data.allRooms;
+                if (roomsCache.current.has(page)) {
+                    const data = roomsCache.current.get(page);
+                    setData(data);
+                } else {
+                    const { data } = await getAllRooms(
+                        page,
+                        RESULTS_PER_PAGE,
+                        roomType
+                    );
+                    setData(data);
+
+                    if (queue.current.length >= CACHE_SIZE) {
+                        const key = queue.current.shift();
+                        roomsCache.current.delete(key);
+                    }
+                    roomsCache.current.set(page, data);
+                    queue.current.push(page);
+                }
             } catch (error) {
                 console.error("Error fetching rooms:", error);
+            } finally {
+                setLoadingRooms(false);
             }
         };
         fetchRooms(page);
+        
     }, [page]);
 
     const toggleModal = () => {
         setShowModal((state) => !state);
     };
 
-    const handleSearch = debounce((e) => {
-        const searchValue = e.target.value;
-        const filteredRooms = roomsCopy.current.filter((room) => {
-            return room.topic.toLowerCase().includes(searchValue.toLowerCase());
-        });
-        setRooms(filteredRooms);
-    }, 300);
+    const debouncedSearch = useCallback(
+        debounce((searchValue) => {
+            console.log("object");
+            const filteredRooms = roomsCopy.current.filter((room) => {
+                return (
+                    room.topic.toLowerCase().includes(searchValue) ||
+                    room.owner.name.toLowerCase().includes(searchValue)
+                );
+            });
+            setRooms(filteredRooms);
+        }, 300),
+        []
+    );
+
+    const handleSearch = (e) => {
+        const value = e.target.value.toLowerCase();
+        setSearchValue(value);
+        debouncedSearch(value);
+    };
 
     const handlePrevPage = () => {
         setPage((prevPage) => Math.max(prevPage - 1, 1));
@@ -96,12 +133,23 @@ export default function Rooms() {
                         <div className={styles.searchBox}>
                             <label htmlFor="search-box">
                                 <SearchIcon />
+                                {searchValue !== "" && (
+                                    <CancelIcon
+                                        className={styles.cancelIcon}
+                                        onClick={() => {
+                                            setSearchValue("");
+                                            setRooms(roomsCopy.current);
+                                        }}
+                                    />
+                                )}
                             </label>
                             <input
                                 type="text"
                                 id="search-box"
-                                placeholder="Discover rooms"
+                                name="search-box"
+                                placeholder="Type topic / name"
                                 onChange={handleSearch}
+                                value={searchValue}
                             />
                         </div>
                     </div>
@@ -118,19 +166,18 @@ export default function Rooms() {
                     </div>
                 </div>
                 <div className={styles.roomsCardsWrapper}>
-                    {rooms.length > 0 ? (
-                        rooms.map((room, index) => (
-                            <RoomCard
-                                room={room}
-                                deleteRoom={deleteRoom}
-                                key={index}
-                                showCardMenu={showCardMenu}
-                                setCardShowMenu={setCardShowMenu}
-                            />
-                        ))
-                    ) : (
-                        <div>No rooms found</div>
-                    )}
+                    {loadingRooms && <div>Loading rooms, please wait...</div>}
+                    {!loadingRooms && rooms.length > 0
+                        ? rooms.map((room, index) => (
+                              <RoomCard
+                                  room={room}
+                                  deleteRoom={deleteRoom}
+                                  key={index}
+                                  showCardMenu={showCardMenu}
+                                  setCardShowMenu={setCardShowMenu}
+                              />
+                          ))
+                        : !loadingRooms && <div>No rooms found</div>}
                 </div>
                 {totalPages > 1 && (
                     <div className={styles.paginationWrapper}>

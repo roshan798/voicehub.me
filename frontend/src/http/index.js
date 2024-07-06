@@ -44,6 +44,15 @@ export const deleteRoom = (roomId) => {
 export const updateProfile = (data) => {
     return api.put('api/v1/users', data);
 }
+export const searchRooms = (query) => {
+    const { roomType, topic } = query;
+    return api.get("/api/v1/rooms/search", {
+        params: {
+            topic,
+            roomType
+        }
+    })
+}
 // interceptors
 /*
 Axios interceptors allow us to run our code or modify the request or response before the request is sent

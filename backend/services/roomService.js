@@ -88,6 +88,29 @@ class RoomService {
         }
     }
 
+    async searchRooms(query) {
+        const { topic = "", roomType = "open", page = 1, resultPerPage = 8 } = query;
+        try {
+            const searchConditions = {
+                $and: [
+                    { roomType: roomType },
+                    { topic: { $regex: topic, $options: "i" } },
+                ]
+            };
+
+            const rooms = await roomModal.find(searchConditions)
+                .populate('speakers')
+                .populate('ownerId')
+                .sort({ createdAt: -1 })
+                .exec();
+
+            return rooms;
+        } catch (error) {
+            console.error("Error occurred while searching for rooms:", error);
+            throw new Error("An error occurred while searching for rooms. Please try again later.");
+        }
+    }
+
     updateOwnerSocketId(roomId, socketId) {
         return roomModal.updateOne({ _id: roomId }, { ownerSocketId: socketId });
     }

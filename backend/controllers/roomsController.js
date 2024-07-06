@@ -59,6 +59,22 @@ class RoomsController {
         });
     }
 
+    async search(req, res) {
+        const query = req.query; // { roomType, topic }
+        try {
+            const rooms = await roomService.searchRooms(query);
+            const searchResults = rooms.map((room) => new RoomDto(room))
+            res.json({
+                success: true,
+                rooms: searchResults
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: "Error searching rooms",
+                error: error.message,
+            });
+        }
+    }
 
     async show(req, res) {
         const roomId = req.params.roomId;
