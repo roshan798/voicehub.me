@@ -74,7 +74,6 @@ export default function Rooms() {
 
     const debouncedSearch = useCallback(
         debounce((searchValue) => {
-            console.log("object");
             const filteredRooms = roomsCopy.current.filter((room) => {
                 return (
                     room.topic.toLowerCase().includes(searchValue) ||
