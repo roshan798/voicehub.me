@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useNavigate } from "react-router-dom";
 import styles from "./Room.module.css";
 import muteIcon from "../../assets/Images/mute.png";
 import unmuteIcon from "../../assets/Images/unmute.png";
@@ -12,10 +11,6 @@ const ClientsList = ({
     removeUser,
     children,
 }) => {
-    const navigate = useNavigate();
-    const handleManualLeave = () => {
-        navigate("/rooms");
-    };
     return (
         <div className={styles.clientsContainer}>
             {children}
@@ -37,7 +32,7 @@ const ClientsList = ({
                             }}>
                             <div className={styles.avatarWrapper}>
                                 {room?.owner?.id !== client?.id &&
-                                room.owner.id === user.id ? (
+                                room?.owner.id === user.id ? (
                                     <span
                                         className={styles.removeUserMask}
                                         onClick={() => {
