@@ -1,3 +1,8 @@
+.mainContainer {
+    border-top: 1px solid #ffffff80;
+
+}
+
 .backBtn {
     cursor: pointer;
     padding: 0.3rem;
@@ -37,10 +42,19 @@
 }
 
 .clientWrapper {
+    padding: 1rem;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: center;
+    background-color: #333;
+    box-shadow: 0px 0px 0px 0px #00000000;
+    transform: box-shadow 0.3s ease;
+}
+
+.clientWrapper:hover {
+    box-shadow: 1px 0px 10px 1px #000000a0;
 }
 
 .avatar {
@@ -52,9 +66,14 @@
 }
 
 .clientsContainer {
+    --gap: 1rem;
     background-color: var(--secondary-bg-color);
     padding: 1.5rem;
     min-height: calc(100vh - 130px);
+    width: calc(100vw - var(--gap) * 2);
+    margin-left: calc(var(--gap) - 5px);
+    border-radius: var(--gap);
+    margin-bottom: 1rem;
 }
 
 .topContainer {
@@ -102,11 +121,11 @@
     justify-content: flex-start;
     flex-wrap: wrap;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     text-align: center;
 }
 
-.clientWrapper h4 {
+.clientWrapper h4:not(.owner>*) {
     font-weight: 500;
 }
 
@@ -115,23 +134,50 @@
     cursor: pointer;
 }
 
-.muteUnmuteBtn {
+.removeUserMask {
+    content: "";
+    text-shadow: 0 0 1px 1 black;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 90%;
+    height: 85%;
+    background-color: #000000cc;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.avatarWrapper:hover .removeUserMask {
+    display: flex;
+}
+
+
+.muteUnmuteImage {
     border: none;
     cursor: pointer;
     position: absolute;
     bottom: -5px;
     right: -8px;
     background-color: transparent;
-}
-
-.muteUnmuteBtn img {
     width: 32px;
     filter: drop-shadow(-2px -2px 9px #0BA);
 }
 
 .owner {
     order: -1;
+
 }
+
+.owner > * {
+    /* font-style: bold; */
+    font-weight: 700;
+}
+
+
+
 
 .owner .avatar {
     border: 2px solid var(--success);
@@ -190,8 +236,8 @@
 
 .requestsContainer {
     position: absolute;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 1.5rem;
+    right: 1.5rem;
     padding: 5px;
     background-color: var(--primary-bg-color);
     border-radius: 8px;

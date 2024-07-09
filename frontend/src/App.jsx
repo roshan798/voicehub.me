@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import SemiProtectedRoute from "./routes/SemiProtectedRoute.jsx";
 import PublicRoute from "./routes/PublicRoute.jsx";
-
+import Footer from "./components/shared/Footer/Footer.jsx";
 const Home = lazy(() => import("./pages/Home/Home.jsx"));
 const Authenticate = lazy(() =>
     import("./pages/Authenticate/Authenticate.jsx")
@@ -19,7 +19,6 @@ const Room = lazy(() => import("./pages/Room/Room.jsx"));
 const Activate = lazy(() => import("./pages/Activate/Activate.jsx"));
 const Profile = lazy(() => import("./pages/profile/Profile.jsx"));
 const Error404 = lazy(() => import("./pages/Error/Error404.jsx"));
-
 
 function App() {
     const { Loading } = useLoadingWithRefresh();
@@ -70,6 +69,7 @@ function App() {
                     />
                 </Routes>
             </Suspense>
+            <Footer></Footer>
         </>
     );
 }

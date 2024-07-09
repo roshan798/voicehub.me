@@ -19,12 +19,14 @@ const ProfileSection = ({ logoutUser, user }) => {
                 <div className={styles.profileContainer}>
                     {user.activated && (
                         <div className={styles.right}>
-                            <img
-                                src={user.avatar}
-                                alt="user-avatar"
+                            {/* <span>{user.name.split(" ")[0]}</span> */}
+                            <div
                                 className={styles.avatar}
-                                onClick={toggleModal}
-                            />
+                                style={{
+                                    background: `url(${user.avatar}) no-repeat center center/cover`,
+                                }}
+                                aria-label="user-avatar"
+                                onClick={toggleModal}></div>
                             <ul
                                 className={`${styles.menu} hidden`}
                                 ref={modalRef}>
@@ -33,10 +35,12 @@ const ProfileSection = ({ logoutUser, user }) => {
                                         to="/profile"
                                         className={styles.profileWrapper}
                                         onClick={toggleModal}>
-                                        <img
-                                            src={user.avatar}
-                                            alt={user.name}
-                                        />
+                                        <div
+                                            className={styles.avatar}
+                                            style={{
+                                                background: `url(${user.avatar}) no-repeat center center/cover`,
+                                            }}
+                                            aria-label="user-avatar"></div>
                                         <p className="name">{user.name}</p>
                                     </Link>
                                 </li>
@@ -44,7 +48,10 @@ const ProfileSection = ({ logoutUser, user }) => {
                                     <button
                                         className={`${styles.logoutBtn} transition`}
                                         onClick={logoutUser}>
-                                            <img src={logoutIcon} className="transition"/>
+                                        <img
+                                            src={logoutIcon}
+                                            className="transition"
+                                        />
                                         Log out
                                     </button>
                                 </li>

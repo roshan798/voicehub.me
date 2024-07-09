@@ -4,6 +4,7 @@ import chatIcon from "../../assets/Images/chatIcon.png";
 import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
 import { useNavigate } from "react-router-dom";
 import MenuIcon from "../../assets/icons/MenuIcon";
+import CancelIcon from "../../assets/icons/CrossIcon";
 
 export default function RoomCard({
     room,
@@ -53,18 +54,16 @@ export default function RoomCard({
                 className={`${styles.card} transition ${
                     modalRoomId == roomId ? styles.activeCard : ""
                 }`}
-                aria-label={title}
-            >
+                aria-label={title}>
                 <div
                     className={styles.cardLeft}
                     onClick={() => {
                         navigate(`/room/${roomId}`);
-                    }}
-                >
+                    }}>
                     <p className={styles.title}>{title}</p>
                     <div className={styles.detailsContainer}>
                         <div className={styles.avatarContainer}>
-                            <img
+                            {/* <img
                                 src={
                                     speakers.length
                                         ? speakers[0].avatar
@@ -75,12 +74,20 @@ export default function RoomCard({
                                         ? speakers[0].name
                                         : owner.name
                                 }
-                            />
+                            /> */}
+                            <div
+                                style={{
+                                    background: `url(${
+                                        speakers.length
+                                            ? speakers[0].avatar
+                                            : owner.avatar
+                                    }) no-repeat center center/cover`,
+                                }}></div>
                             {speakers.length >= 2 && (
-                                <img
-                                    src={speakers[1].avatar}
-                                    alt=""
-                                />
+                                <div
+                                    style={{
+                                        background: `url(${speakers[1].avatar}) no-repeat center center/cover`,
+                                    }}></div>
                             )}
                         </div>
                         <div className={styles.speakersNames}>
@@ -106,7 +113,11 @@ export default function RoomCard({
                         <button
                             className={styles.menu}
                             onClick={handleMenuClick}>
-                            <MenuIcon />
+                            {modalRoomId == roomId ? (
+                                <CancelIcon />
+                            ) : (
+                                <MenuIcon />
+                            )}
                         </button>
                         {show && modalRoomId == roomId && (
                             <div className={styles.roomCardModal}>

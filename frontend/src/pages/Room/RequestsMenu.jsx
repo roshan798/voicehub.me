@@ -9,15 +9,16 @@ export default function RequestsMenu({
     joinRequests,
     setJoinRequests,
     roomId,
+    socket,
 }) {
     const handleAccept = (userId, roomId) => {
-        acceptRoomJoinRequest(userId, roomId);
+        acceptRoomJoinRequest(socket, userId, roomId);
         setJoinRequests((request) => {
             return request.filter((req) => req.id != userId);
         });
     };
     const handleDecline = (userId, roomId) => {
-        cancelRoomJoinRequest(userId, roomId);
+        cancelRoomJoinRequest(socket, userId, roomId);
         setJoinRequests((request) => {
             return request.filter((req) => req.id != userId);
         });

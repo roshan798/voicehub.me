@@ -1,20 +1,22 @@
 /* eslint-disable no-unused-vars */
 import { useCallback, useEffect, useRef } from 'react';
+import freeice from 'freeice';
 import { useStateWithCallback } from './useStateWithCallback';
 import socketInit from '../socket/index.js';
 import { ACTIONS } from '../actions.js';
-import freeice from 'freeice';
 import showToastMessage from "../utils/showToastMessage.js"
 
 export function useWebRTC(roomId, user) {
-	const [clients, setClients] = useStateWithCallback([]);
-	const [joinRequests, setJoinRequests] = useStateWithCallback([])
+	const socket = useRef(null);
 	const audioElements = useRef({});
 	const connections = useRef({});
 	const localMediaStream = useRef(null);
-	const socket = useRef(null);
 	const clientsRef = useRef([]);
-	const [approvedTojoin, setApprovedToJoin] = useStateWithCallback(true)
+
+	const [clients, setClients] = useStateWithCallback([]);
+	const [joinRequests, setJoinRequests] = useStateWithCallback([])
+	const [approvedToJoin, setApprovedToJoin] = useStateWithCallback(true)
+
 	// Add a new client to the list
 	const addNewClient = useCallback(
 		(newClient, cb) => {
@@ -63,7 +65,6 @@ export function useWebRTC(roomId, user) {
 		}
 	};
 
-	// 
 	// Stop Capture local media stream
 	const stopCaptureAndLeave = () => {
 		if (localMediaStream.current && localMediaStream.current.getTracks) {
@@ -71,14 +72,15 @@ export function useWebRTC(roomId, user) {
 				track.stop();
 			});
 		}
+		// console.log("stopcapture", roomId);
 		socket.current.emit(ACTIONS.LEAVE, { roomId, userId: user.id });
 	}
 
 	// Initialize WebRTC and Socket
 	useEffect(() => {
 		const initializeWebRTC = async () => {
-			// console.log("line 56 called initialzeWebRTC");
 			try {
+				//check
 				Object.values(connections.current).forEach(connection => connection.close());
 				connections.current = {};
 
@@ -198,54 +200,71 @@ export function useWebRTC(roomId, user) {
 					}
 				};
 
-				// Socket event listeners
-				socket.current.on(ACTIONS.ADD_PEER, handleNewPeer);
-				socket.current.on(ACTIONS.ICE_CANDIDATE, handleIceCandidate);
-				socket.current.on(ACTIONS.SESSION_DESCRIPTION, handleRemoteSDP);
-				socket.current.on(ACTIONS.REMOVE_PEER, handleRemovePeer);
-				socket.current.on(ACTIONS.MUTE, ({ peerId, userId }) => {
-					setMute(true, userId);
-				});
+				const setupEventListeners = (connection, peerId, userId) => {
+					// Socket event listeners
+					socket.current.on(ACTIONS.ADD_PEER, handleNewPeer); // 1
+					socket.current.on(ACTIONS.ICE_CANDIDATE, handleIceCandidate); //2
+					socket.current.on(ACTIONS.SESSION_DESCRIPTION, handleRemoteSDP); //3 
+					socket.current.on(ACTIONS.REMOVE_PEER, handleRemovePeer); // 4
+					socket.current.on(ACTIONS.MUTE, ({ peerId, userId }) => { //5 
+						setMute(true, userId);
+					});
 
-				socket.current.on(ACTIONS.UNMUTE, ({ peerId, userId }) => {
-					setMute(false, userId);
-				});
-				socket.current.on(ACTIONS.USER_NOT_ALLOWED, ({ roomId, user }) => {
-					// console.log("user is not in the approved list ");
-					setApprovedToJoin(false)
-					return;
-				})
-
-				socket.current.on(ACTIONS.APPROVE_JOIN_REQUEST, ({ roomId, user }) => {
-					// console.log("a user a requesting to join ur room");
-					setJoinRequests(requests => {
-						return [...requests, user]
+					socket.current.on(ACTIONS.UNMUTE, ({ peerId, userId }) => { //6
+						setMute(false, userId);
+					});
+					socket.current.on(ACTIONS.USER_NOT_ALLOWED, ({ roomId, user }) => { //7 
+						// console.log("user is not in the approved list ");
+						setApprovedToJoin(0)
+						return;
 					})
-				})
 
-				socket.current.on(ACTIONS.JOIN_APPROVED, ({ roomId }) => {
-					stopCaptureAndLeave();
-					startCapture()
-					initializeWebRTC();
-					// console.log("user is approved to join the room");
-					showToastMessage("success", "Request approved")
-					setApprovedToJoin(true)
-				})
-				socket.current.on(ACTIONS.JOIN_CANCELLED, ({ roomId }) => {
-					// console.log("user is Declined to join the room");
-					setApprovedToJoin(false)
-				})
+					socket.current.on(ACTIONS.APPROVE_JOIN_REQUEST, ({ roomId, user }) => { //8
+						console.log("a user a requesting to join ur room");
+						setJoinRequests(requests => {
+							return [...requests, user]
+						})
+					})
+
+					socket.current.on(ACTIONS.JOIN_APPROVED, ({ roomId }) => { //9 
+						stopCaptureAndLeave();
+						startCapture()
+						initializeWebRTC();
+						console.log("user is approved to join the room");
+						showToastMessage("success", "Request approved")
+						setApprovedToJoin(1)
+					})
+					socket.current.on(ACTIONS.JOIN_CANCELLED, ({ roomId }) => { // 10 
+						// console.log("user is Declined to join the room");
+						setApprovedToJoin(false)
+					})
+					socket.current.on(ACTIONS.JOIN_REQUEST_PENDING, (data) => { //11
+						// console.log("user is Declined to join the room");
+						// showToastMessage("info", "Request is pending")
+						setApprovedToJoin(2)
+					})
+					socket.current.on(ACTIONS.YOU_ARE_REMOVED, ({ roomId }) => { // 12
+						stopCaptureAndLeave();
+						showToastMessage("error", "You are removed from the room")
+						setApprovedToJoin(0)
+					})
+				}
+				setupEventListeners(connections.current, socket.current, user.id);
 				return () => {
-					socket.current.off(ACTIONS.ADD_PEER, handleNewPeer);
-					socket.current.off(ACTIONS.ICE_CANDIDATE, handleIceCandidate);
-					socket.current.off(ACTIONS.SESSION_DESCRIPTION, handleRemoteSDP);
-					socket.current.off(ACTIONS.REMOVE_PEER, handleRemovePeer);
-					socket.current.off(ACTIONS.MUTE);
-					socket.current.off(ACTIONS.UNMUTE);
-					socket.current.off(ACTIONS.USER_NOT_ALLOWED);
-					socket.current.off(ACTIONS.APPROVE_JOIN_REQUEST);
-					socket.current.off(ACTIONS.JOIN_APPROVED);
-					socket.current.off(ACTIONS.JOIN_CANCELLED);
+					socket.current.off(ACTIONS.ADD_PEER, handleNewPeer); // 1
+					socket.current.off(ACTIONS.ICE_CANDIDATE, handleIceCandidate); // 2
+					socket.current.off(ACTIONS.SESSION_DESCRIPTION, handleRemoteSDP); // 3 
+					socket.current.off(ACTIONS.REMOVE_PEER, handleRemovePeer); // 4
+					socket.current.off(ACTIONS.MUTE);// 5
+					socket.current.off(ACTIONS.UNMUTE);// 6 
+					socket.current.off(ACTIONS.USER_NOT_ALLOWED);// 7
+					socket.current.off(ACTIONS.APPROVE_JOIN_REQUEST);// 8
+					socket.current.off(ACTIONS.JOIN_APPROVED);// 9
+					socket.current.off(ACTIONS.JOIN_CANCELLED);// 10
+					socket.current.off(ACTIONS.JOIN_REQUEST_PENDING);// 11
+					socket.current.off(ACTIONS.YOU_ARE_REMOVED);// 12
+
+
 				};
 			} catch (error) {
 				// Handle initialization errors
@@ -260,12 +279,9 @@ export function useWebRTC(roomId, user) {
 
 
 	useEffect(() => {
-		if (approvedTojoin) {
-			startCapture();
-		}
-		// Cleanup when leaving the room
+		if (approvedToJoin) startCapture();
 		return stopCaptureAndLeave;
-	}, [approvedTojoin, addNewClient, roomId, user]);
+	}, [approvedToJoin]);
 
 	useEffect(() => {
 		clientsRef.current = clients;
@@ -287,12 +303,11 @@ export function useWebRTC(roomId, user) {
 				}
 				if (isMute === true) socket.current.emit(ACTIONS.MUTE, { roomId, userId });
 				else socket.current.emit(ACTIONS.UNMUTE, { roomId, userId });
-
 				settled = true;
 			}
 			if (settled) clearInterval(interval);
 		}, 200);
 	};
 
-	return { clients, provideRef, handleMute, approvedTojoin, joinRequests, setJoinRequests };
+	return { socket, clients, provideRef, handleMute, approvedToJoin, joinRequests, setJoinRequests };
 }
