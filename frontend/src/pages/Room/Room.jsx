@@ -7,39 +7,40 @@ import ArrowForward from "../../assets/Images/Arrow forward.png";
 import muteIcon from "../../assets/Images/mute.png";
 import unmuteIcon from "../../assets/Images/unmute.png";
 import shareIcon from "../../assets/shareIcon.svg";
+import CrossIcon from "../../assets/Icons/CrossIcon.jsx";
 import styles from "./Room.module.css";
 import Tooltip from "../../components/shared/Tooltip/Tooltip.jsx";
 import MenuIcon from "../../assets/icons/MenuIcon.jsx";
 import LeaveIcon from "../../assets/icons/LeaveIcon.jsx";
-import RequestApprovalPage from "../RequestApprovalPage/RequestApprovalPage.jsx";
+import RequestApprovalPage from "../RequestPages/RequestApprovalPage.jsx";
+import RequestPendingPage from "../RequestPages/RequestPendingPage.jsx";
 import RequestsMenu from "./RequestsMenu.jsx";
+import { ACTIONS } from "../../actions.js";
+import showToastMessage from "../../utils/showToastMessage.js";
+import ClientsList from "./ClientsList.jsx";
 
 export default function Room() {
-    const navigate = useNavigate();
     const { roomId } = useParams();
-    const [room, setRoom] = useState(null);
-    const [isMute, setMute] = useState(true);
+    const navigate = useNavigate();
     const { user } = useSelector((state) => state.authSlice);
+
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMute, setMute] = useState(true);
+    const [room, setRoom] = useState(null);
+
     const {
+        socket,
         clients,
         handleMute,
         provideRef,
-        approvedTojoin,
+        approvedToJoin,
         joinRequests,
         setJoinRequests,
     } = useWebRTC(roomId, user);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const handleManualLeave = () => {
-        navigate("/rooms");
-    };
-
-    const handleMuteClick = (clientId) => {
-        if (clientId !== user.id) return;
-        setMute((isMuted) => !isMuted);
-    };
 
     useEffect(() => {
         handleMute(isMute, user.id);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMute]);
 
     useEffect(() => {
@@ -51,7 +52,9 @@ export default function Room() {
                         state: { error: data.error, to: "/rooms" },
                     });
                 }
-                setRoom(data);
+                const { joinRequests, ...withOutJoinRequest } = data;
+                setRoom(withOutJoinRequest);
+                setJoinRequests(joinRequests);
             };
             fetchRoom();
         } catch (error) {
@@ -65,37 +68,33 @@ export default function Room() {
                 },
             });
         }
-    }, [navigate, roomId]);
+    }, [roomId]);
+
+    const handleMuteClick = (clientId) => {
+        if (clientId !== user.id) return;
+        setMute((isMuted) => !isMuted);
+    };
+
+    const removeUser = async (userId) => {
+        // send socket message to the server to remove him from every where
+        socket.current.emit(ACTIONS.REMOVE_USER, {
+            senderId: user.id,
+            userId,
+            roomId,
+        });
+    };
 
     const handleShare = async () => {
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: room?.topic || "Join my voice room",
-                    text: "Join me in this voice room!",
-                    url: window.location.href,
-                });
-                // add the toastify
-                // console.log("Share successful!");
-            } catch (error) {
-                console.error("Error sharing:", error);
-            }
-        } else {
-            console.warn("Web Share API not supported in this browser.");
-        }
+        navigator.clipboard.writeText(window.location.href);
+        showToastMessage("success", "Link copied to clipboard!");
     };
-    if (!approvedTojoin) {
-        return (
-            <RequestApprovalPage
-                roomId={roomId}
-                user={user}
-                room={room}
-            />
-        );
-    }
+
+    const handleManualLeave = () => {
+        navigate("/rooms");
+    };
 
     return (
-        <div className={styles.mainContainer}>
+        <main className={styles.mainContainer}>
             <div>
                 <button
                     className={styles.backBtn}
@@ -107,101 +106,101 @@ export default function Room() {
                     <span>All voice rooms</span>
                 </button>
             </div>
-            <div className={styles.clientsContainer}>
-                <div className={styles.topContainer}>
+            {approvedToJoin == 0 ? (
+                <RequestApprovalPage
+                    roomId={roomId}
+                    user={user}
+                    room={room}
+                    socket={socket}
+                />
+            ) : approvedToJoin == 2 ? (
+                <RequestPendingPage
+                    roomId={roomId}
+                    user={user}
+                    room={room}
+                />
+            ) : (
+                <>
+                    <ClientsList
+                        clients={clients}
+                        room={room}
+                        user={user}
+                        provideRef={provideRef}
+                        removeUser={removeUser}>
+                        <div
+                            className={styles.topContainer}
+                            style={{
+                                borderBottom: "1px solid #e0e0e040",
+                                padding: "0 16px",
+                                paddingBottom: "8px",
+                            }}>
+                            <div
+                                className={`${styles.leftContainer} ${styles.roomTitle}`}>
+                                {room?.topic}
+                            </div>
+                            <div
+                                className={`${styles.topRight} ${styles.actions}`}>
+                                <Tooltip
+                                    position="bottom"
+                                    text="Add others">
+                                    <button
+                                        onClick={handleShare}
+                                        className={`${styles.btn} transition`}
+                                        title="Send an invite"
+                                        style={{
+                                            display: "grid",
+                                            placeItems: "center",
+                                            padding: "8px",
+                                        }}>
+                                        <img
+                                            src={shareIcon}
+                                            alt="share"
+                                        />
+                                    </button>
+                                </Tooltip>
+                                <Tooltip
+                                    position="bottom"
+                                    text="Leave room">
+                                    <button
+                                        onClick={handleManualLeave}
+                                        className={`${styles.btnWithIcon} ${styles.btn} transition`}>
+                                        <span className={styles.handIcons}>
+                                            ✌️
+                                        </span>
+                                    </button>
+                                </Tooltip>
+                            </div>
+                        </div>
+                    </ClientsList>
                     <div
-                        className={`${styles.leftContainer} ${styles.roomTitle}`}>
-                        {room?.topic}
-                    </div>
-                    <div className={`${styles.topRight} ${styles.actions}`}>
+                        id="options"
+                        className={styles.optionsContainer}>
                         <Tooltip
-                            position="bottom"
-                            text="Add others">
+                            text={!isMute ? "Mute" : "Unmute"}
+                            position="top">
                             <button
-                                onClick={handleShare}
-                                className={`${styles.btn} transition`}
-                                title="Send an invite"
-                                style={{
-                                    display: "grid",
-                                    placeItems: "center",
-                                    padding: "8px",
-                                }}>
+                                onClick={() => handleMuteClick(user.id)}
+                                className={styles.optionBtn}>
                                 <img
-                                    style={{
-                                        filter: "invert(1)",
-                                    }}
-                                    src={shareIcon}
-                                    alt="share"
+                                    src={isMute ? muteIcon : unmuteIcon}
+                                    alt={isMute ? "Mute" : "Unmute"}
                                 />
                             </button>
                         </Tooltip>
                         <Tooltip
-                            position="bottom"
-                            text="Leave room">
+                            text="Leave room"
+                            position="top">
                             <button
                                 onClick={handleManualLeave}
-                                className={`${styles.btnWithIcon} ${styles.btn} transition`}>
-                                <span className={styles.handIcons}>✌️</span>
+                                className={styles.optionBtn}>
+                                <LeaveIcon />
                             </button>
                         </Tooltip>
                     </div>
-                </div>
-                <div className={styles.clientsList}>
-                    {clients.length > 0
-                        ? clients.map((client) => (
-                              <div
-                                  key={client.id}
-                                  className={`${styles.clientWrapper} ${
-                                      room?.owner?.id === client?.id
-                                          ? styles.owner
-                                          : ""
-                                  }`}>
-                                  <div className={styles.avatarWrapper}>
-                                      <img
-                                          src={client.avatar}
-                                          alt={`${client.name} avatar`}
-                                          className={styles.avatar}
-                                      />
-                                  </div>
-                                  <audio
-                                      ref={(instance) => {
-                                          provideRef(instance, client.id);
-                                      }}
-                                      muted={client.muted}
-                                  />
-                                  <h4>{client.name.split(" ")[0]}</h4>
-                              </div>
-                          ))
-                        : ""}
-                </div>
-            </div>
-            <div
-                id="options"
-                className={styles.optionsContainer}>
-                <Tooltip
-                    text={!isMute ? "Mute" : "Unmute"}
-                    position="top">
-                    <button
-                        onClick={() => handleMuteClick(user.id)}
-                        className={styles.optionBtn}>
-                        <img
-                            src={isMute ? muteIcon : unmuteIcon}
-                            alt={isMute ? "Mute" : "Unmute"}
-                        />
-                    </button>
-                </Tooltip>
-                <Tooltip
-                    text="Leave room"
-                    position="top">
-                    <button
-                        onClick={handleManualLeave}
-                        className={styles.optionBtn}>
-                        <LeaveIcon />
-                    </button>
-                </Tooltip>
-            </div>
+                </>
+            )}
 
-            {joinRequests.length > 0 && (
+            {joinRequests && joinRequests.length > 0 && (
                 <div className={styles.requestsContainer}>
                     <div
                         className={`${
@@ -213,11 +212,10 @@ export default function Room() {
                         <div className={styles.requestsHeader}>
                             <button
                                 onClick={() => {
-                                    // console.log(isMenuOpen);
                                     setIsMenuOpen(!isMenuOpen);
                                 }}
                                 className={styles.menuBtn}>
-                                <MenuIcon />
+                                {isMenuOpen ? <CrossIcon /> : <MenuIcon />}
                             </button>
                         </div>
                         {isMenuOpen && (
@@ -226,11 +224,12 @@ export default function Room() {
                                 joinRequests={joinRequests}
                                 setJoinRequests={setJoinRequests}
                                 roomId={room.id}
+                                socket={socket}
                             />
                         )}
                     </div>
                 </div>
             )}
-        </div>
+        </main>
     );
 }

@@ -17,6 +17,8 @@ router.get('/rooms/search', authMiddleware, roomsController.search);
 router.get('/rooms/:roomId', authMiddleware, roomsController.show);
 
 router.put('/users', authMiddleware, authController.updateProfile);
-router.delete('/rooms/:roomId',authMiddleware,roomsController.deleteRoom)
+router.delete('/rooms/:roomId', authMiddleware, roomsController.deleteRoom)
+//api.delete(`api/v1/rooms/${roomId}/users/${userId}`)
+router.delete("/rooms/:roomId/users/:userId", authMiddleware, roomsController.removeUserFromRoom)
 
 export default router;

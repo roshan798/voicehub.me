@@ -1,13 +1,11 @@
 import { useState } from "react";
 import styles from "./RequestApprovalPage.module.css";
-import socketInit from "../../socket";
 import { ACTIONS } from "../../actions";
-const socket = socketInit();
-const RequestApprovalPage = ({ roomId, user, room }) => {
+const RequestApprovalPage = ({ socket, roomId, user, room }) => {
     const [requestSent, setRequestSent] = useState(false);
 
     const requestApproval = () => {
-        socket.emit(ACTIONS.JOIN_REQUEST, { roomId, user });
+        socket.current.emit(ACTIONS.JOIN_REQUEST, { roomId, user });
         setRequestSent(true);
     };
 

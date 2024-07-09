@@ -1,16 +1,40 @@
-footer {
+.footerContainer {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    background-color: var(--primary-bg-color);
-    padding: 20px;
+    padding: 10px 20px;
+    color: #888;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
 }
 
-footer a {
-    margin: 0 10px;
+.author {
+    color: #fff;
 }
 
-footer img {
-    width: 30px;
-    height: 30px;
+.socialIcons {
+    display: flex;
+    gap: 15px;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+    fill: #fff;
+    transition: fill 0.3s ease;
+}
+
+.linkedin:hover {
+    fill: #0073b1;
+}
+
+.github:hover {
+    fill: #333333;
+}
+
+@media (max-width: 768px) {
+    .footerContainer {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
 }

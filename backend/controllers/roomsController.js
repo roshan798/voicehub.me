@@ -78,9 +78,13 @@ class RoomsController {
 
     async show(req, res) {
         const roomId = req.params.roomId;
+        const userId = req.user._id;
         try {
-            const room = await roomService.getRoom(roomId);
-            return res.json(new RoomDto(room));
+            const room = await roomService.getRoom(roomId, userId);
+            if (userId === room.ownerId.toString()) {
+                return res.json(new RoomDto(room, true));
+            }
+            return res.json(new RoomDto(room, false));
         } catch (error) {
             return res.json({
                 error: error.message
@@ -109,5 +113,26 @@ class RoomsController {
             });
         }
     }
+    async removeUserFromRoom(req, res) {
+        const { roomId, userId } = req.params;
+        try {
+            const room = await roomService.getRoom(roomId);
+            if (room.ownerId.toString() !== req.user._id) {
+                return res.status(401).json({
+                    message: "You are not authorized to remove a user from this room"
+                });
+            }
+            await roomService.removeUserFromApprovedList(roomId, userId);
+            return res.json({
+                success: true,
+                message: "User removed from room successfully"
+            });
+        } catch (error) {
+            return res.status(400).json({
+                error: error.message
+            });
+        }
+    }
+
 }
 export default new RoomsController();

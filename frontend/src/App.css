@@ -11,7 +11,7 @@
   /* --success: #07bc0c; */
   --success: #28a745;
   --error: #FF4D4D;
-  --yellow : ##FFC107;
+  --yellow: ##FFC107;
 }
 
 #root {
@@ -95,7 +95,8 @@ img {
   width: 90%;
   max-width: 500px;
   margin: auto;
-  margin-top: 10vh;
+  padding-top: 10vh;
+  min-height: calc(100vh - 70px);
 }
 
 .hidden {

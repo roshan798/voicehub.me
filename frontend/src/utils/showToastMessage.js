@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
-export default function showToastMessage(type, msg, theme) {
+
+export default function showToastMessage(type, msg, theme = "dark") {
     if (type === "success") {
         return toast.success(msg, {
             position: toast.POSITION.TOP_RIGHT,

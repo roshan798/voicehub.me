@@ -53,6 +53,13 @@ export const searchRooms = (query) => {
         }
     })
 }
+
+// change
+export const removeUserFromRoom = (roomId, userId) => {
+    return api.delete(`api/v1/rooms/${roomId}/users/${userId}`);
+}
+
+// change
 // interceptors
 /*
 Axios interceptors allow us to run our code or modify the request or response before the request is sent

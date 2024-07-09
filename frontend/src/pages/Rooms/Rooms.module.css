@@ -1,6 +1,7 @@
 .roomsContainer {
     border-top: 1px solid rgba(255, 255, 255, 0.5);
     padding: 1.5rem;
+    min-height: calc(100vh - 70px);
 }
 
 .headingWrapper {
