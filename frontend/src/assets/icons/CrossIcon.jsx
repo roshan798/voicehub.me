@@ -1,4 +1,4 @@
-const CancelIcon = (props) => (
+const CrossIcon = (props) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
@@ -16,4 +16,4 @@ const CancelIcon = (props) => (
         />
     </svg>
 );
-export default CancelIcon;
+export default CrossIcon;
