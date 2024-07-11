@@ -65,7 +65,6 @@ export default function Rooms() {
             }
         };
         fetchRooms(page);
-        
     }, [page]);
 
     const toggleModal = () => {
@@ -105,10 +104,20 @@ export default function Rooms() {
         try {
             const { data } = await deleteRoomAPI(roomId);
             if (data.success) {
-                showToastMessage("success", "Room deleted successfully");
                 setRooms((room) => {
                     return room.filter((r) => r.id !== roomId);
                 });
+                showToastMessage("success", "Room deleted successfully");
+                // updating the cache
+                let cacheRooms = roomsCache.current.get(page);
+                let updatedRooms = cacheRooms.allRooms.filter((room) => {
+                    return room.id !== roomId;
+                });
+                cacheRooms = {
+                    ...cacheRooms,
+                    allRooms: updatedRooms,
+                };
+                roomsCache.current.set(page, cacheRooms);
             } else {
                 throw new Error("Error happened in deleting room");
             }

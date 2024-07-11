@@ -140,7 +140,8 @@ export default function Room() {
                                 paddingBottom: "8px",
                             }}>
                             <div
-                                className={`${styles.leftContainer} ${styles.roomTitle}`}>
+                                className={`${styles.leftContainer} ${styles.roomTitle}`}
+                                title={room?.topic}>
                                 {room?.topic}
                             </div>
                             <div

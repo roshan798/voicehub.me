@@ -7,7 +7,7 @@ import CancelIcon from "../../assets/icons/CrossIcon";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createRoom as createRoomOnBackend } from "../../http/index";
-
+import showToastMessage from "../../utils/showToastMessage";
 // eslint-disable-next-line react/prop-types
 export default function AddRoomModal({ toggleModal }) {
     const navigate = useNavigate();
@@ -15,6 +15,10 @@ export default function AddRoomModal({ toggleModal }) {
     const [topic, setTopic] = useState("");
     const createRoom = async () => {
         if (topic === "") return;
+        if (topic.length > 100) {
+            showToastMessage("error", "Topic must be less than 100 characters");
+            return;
+        }
         try {
             const { data } = await createRoomOnBackend({
                 topic,
