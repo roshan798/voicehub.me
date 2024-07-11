@@ -5,18 +5,25 @@ import peopleVoiceIcon from "../../assets/Images/peopleVoice.png";
 import { useNavigate } from "react-router-dom";
 import MenuIcon from "../../assets/icons/MenuIcon";
 import CancelIcon from "../../assets/icons/CrossIcon";
-
+import { getRelativeTime, formatDate } from "../../utils/timeUtils";
 export default function RoomCard({
     room,
     deleteRoom,
     showCardMenu,
     setCardShowMenu,
 }) {
-    const { topic: title, speakers, owner, id: roomId } = room;
+    const {
+        topic: title,
+        speakers,
+        owner,
+        id: roomId,
+        roomType,
+        createdAt,
+    } = room;
     const { show, roomId: modalRoomId } = showCardMenu;
     const navigate = useNavigate();
     const handleMenuClick = (event) => {
-        event.stopPropagation(); // Prevent navigation
+        event.stopPropagation();
         setCardShowMenu(() => {
             if (modalRoomId == roomId) {
                 return {
@@ -39,7 +46,6 @@ export default function RoomCard({
                     text: "Join me in this voice room!",
                     url: `${window.location.origin}/room/${roomId}`,
                 });
-                // add the toastify
             } catch (error) {
                 console.error("Error sharing:", error);
             }
@@ -53,28 +59,32 @@ export default function RoomCard({
             <div
                 className={`${styles.card} transition ${
                     modalRoomId == roomId ? styles.activeCard : ""
-                }`}
+                } ${styles[roomType]}`}
                 aria-label={title}>
                 <div
                     className={styles.cardLeft}
                     onClick={() => {
                         navigate(`/room/${roomId}`);
                     }}>
-                    <p className={styles.title}>{title}</p>
-                    <div className={styles.detailsContainer}>
+                    <div style={{ width: "100%" }}>
+                        <p
+                            className={styles.title}
+                            title={title}>
+                            {title}
+                        </p>
+                        <span
+                            className={styles.relativeTime}
+                            title={formatDate(createdAt)}>
+                            {getRelativeTime(createdAt)}
+                        </span>
+                    </div>
+
+                    <div
+                        className={styles.detailsContainer}
+                        title={`${
+                            roomType[0].toUpperCase() + roomType.substring(1)
+                        } room`}>
                         <div className={styles.avatarContainer}>
-                            {/* <img
-                                src={
-                                    speakers.length
-                                        ? speakers[0].avatar
-                                        : owner.avatar
-                                }
-                                alt={
-                                    speakers.length
-                                        ? speakers[0].name
-                                        : owner.name
-                                }
-                            /> */}
                             <div
                                 style={{
                                     background: `url(${

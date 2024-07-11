@@ -85,8 +85,12 @@
 }
 
 .roomTitle {
+    max-width: 50%;
     font-size: 1.4rem;
     font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .handIcons,
