@@ -13,10 +13,12 @@ export const ACTIONS = {
     APPROVE_JOIN_REQUEST: 'approve-join-request',
     JOIN_APPROVED: "join-approved",
     JOIN_CANCELLED: "join-cancelled",
-    USER_APPROVED: "user-approved",
     ROOM_NOT_FOUND: "room-not_found",
     USER_NOT_ALLOWED: "user-not-allowed",
-    JOIN_REQUEST_PENDING: "join_request_pending",
     REMOVE_USER: "remove-user",
     YOU_ARE_REMOVED: "you-are-removed",
+    CHECK_USER_IN_ROOM: "check-user-in-room",
+    JOIN_REQUEST_PENDING: "join_request_pending",
+    USER_ALREADY_IN_ROOM: "user-already-in-room",
+    ERROR: "error"
 }

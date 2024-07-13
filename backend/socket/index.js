@@ -1,11 +1,9 @@
 import { Server } from 'socket.io';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 import { ACTIONS } from './../actions.js';
-import mongoose from 'mongoose';
 import RoomService from "../services/roomService.js";
-import roomService from '../services/roomService.js';
-
 const { ObjectId } = mongoose.Types;
 
 const initilizeSocket = (server) => {
@@ -30,19 +28,71 @@ const initilizeSocket = (server) => {
         socket.on(ACTIONS.JOIN_CANCELLED, handleJoinCancelled(socket));
         socket.on(ACTIONS.LEAVE, (data) => leaveRoom(socket, data));
         socket.on(ACTIONS.REMOVE_USER, handleRemoveUser)
+        socket.on(ACTIONS.CHECK_USER_IN_ROOM, handleCheckUserInRoom(socket));
         socket.on('disconnecting', (data) => leaveRoom(socket, { ...data, from: "disconnecting" }));
     };
 
-    //  remove user from room
-    const handleRemoveUser = async ({ senderId, roomId, userId }) => {
-        //log 
-        // console.log("REMOVE_USER", senderId, roomId, userId);
+    const handleJoin = (socket) => async ({ roomId, user }) => {
         try {
-            // get the user who sent this event then check if he is the owner
+            socket.join(roomId);
+            SocketUserMapping.set(socket.id, user);
+            UserIdSocketMapping.set(user.id, socket.id);
+            const room = await RoomService.getRoom(roomId);
+            if (!room) {
+                return socket.emit(ACTIONS.ROOM_NOT_FOUND);
+            }
+
+            const userIdObj = new ObjectId(user.id);
+            if (room.roomType === 'social' &&
+                room.ownerId.toString() !== user.id &&
+                !room.approvedUsers.includes(userIdObj)
+            ) {
+                if (room?.joinRequests.includes(userIdObj)) {
+                    // room join request is still pending
+                    socket.emit(ACTIONS.JOIN_REQUEST_PENDING, { roomId, user });
+                } else {
+                    // not authorized to join this room
+                    socket.emit(ACTIONS.USER_NOT_ALLOWED, { roomId, user });
+                }
+                return;
+            }
+
+
+            if (room.ownerId.toString() === user.id) {
+                // this user is the owner of the room so update the owner's socket id
+                await RoomService.updateOwnerSocketId(roomId, socket.id);
+            }
+
+            await RoomService.addUserToRoom(roomId, user.id);
+            // get all clients in the room
+            const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
+
+            // notify all clients in the room that a new peer has joined
+            clients.forEach((clientId) => {
+                io.to(clientId).emit(ACTIONS.ADD_PEER, {
+                    peerId: socket.id,
+                    createOffer: false,
+                    user: user
+                });
+
+                socket.emit(ACTIONS.ADD_PEER, {
+                    peerId: clientId,
+                    createOffer: true,
+                    user: SocketUserMapping.get(clientId)
+                });
+            });
+            // join the room
+
+        } catch (error) {
+            console.error('Error joining room:', error);
+            socket.emit('error', { message: 'Error joining room' });
+        }
+    };
+
+    const handleRemoveUser = async ({ senderId, roomId, userId }) => {
+        try {
             const room = await RoomService.getRoom(roomId);
             if (room.ownerId.toString() === senderId && userId !== senderId) {
-                //  remove the user from the approved user list
-                // then send all clients of the room to remove this user
                 await RoomService.removeUserFromApprovedList(roomId, userId);
                 await RoomService.removeUserFromRoom(roomId, userId);
                 const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
@@ -71,60 +121,6 @@ const initilizeSocket = (server) => {
             console.error('Error removing user:', error);
         }
     }
-    const handleJoin = (socket) => async ({ roomId, user }) => {
-        try {
-            SocketUserMapping.set(socket.id, user);
-            UserIdSocketMapping.set(user.id, socket.id);
-            const room = await RoomService.getRoom(roomId);
-            if (!room) {
-                return socket.emit(ACTIONS.ROOM_NOT_FOUND);
-            }
-
-            const userIdObj = new ObjectId(user.id);
-            if (room.roomType === 'social' &&
-                room.ownerId.toString() !== user.id &&
-                !room.approvedUsers.includes(userIdObj)
-            ) {
-                if (room?.joinRequests.includes(userIdObj)) {
-                    // room join request is still pending
-                    socket.emit(ACTIONS.JOIN_REQUEST_PENDING, { roomId, user });
-                } else {
-                    // not authorized to join this room
-                    socket.emit(ACTIONS.USER_NOT_ALLOWED, { roomId, user });
-                }
-                return;
-            }
-
-            if (room.ownerId.toString() === user.id) {
-                // this user is the owner of the room so update the owner's socket id
-                await RoomService.updateOwnerSocketId(roomId, socket.id);
-            }
-
-            await RoomService.addUserToRoom(roomId, user.id);
-            // get all clients in the room
-            const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
-
-            // notify all clients in the room that a new peer has joined
-            clients.forEach((clientId) => {
-                io.to(clientId).emit(ACTIONS.ADD_PEER, {
-                    peerId: socket.id,
-                    createOffer: false,
-                    user: user
-                });
-
-                socket.emit(ACTIONS.ADD_PEER, {
-                    peerId: clientId,
-                    createOffer: true,
-                    user: SocketUserMapping.get(clientId)
-                });
-            });
-            // join the room
-            socket.join(roomId);
-        } catch (error) {
-            console.error('Error joining room:', error);
-            socket.emit('error', { message: 'Error joining room' });
-        }
-    };
 
     const handleRelayIce = (socket) => ({ peerId, icecandidate }) => {
         io.to(peerId).emit(ACTIONS.ICE_CANDIDATE, {
@@ -162,6 +158,11 @@ const initilizeSocket = (server) => {
 
     const handleJoinRequest = (socket) => async ({ roomId, user }) => {
         try {
+            // changes here
+            const socketId = socket.id;
+            SocketUserMapping.set(socketId, user);
+            UserIdSocketMapping.set(user.id, socketId);
+            //
             const room = await RoomService.getRoom(roomId);
             if (!room) {
                 return socket.emit(ACTIONS.ROOM_NOT_FOUND);
@@ -173,6 +174,7 @@ const initilizeSocket = (server) => {
 
             if (ownerSocketId) {
                 // send the join request to the owner of the room
+                // change the Action name
                 io.to(ownerSocketId).emit(ACTIONS.APPROVE_JOIN_REQUEST,
                     {
                         roomId,
@@ -189,19 +191,20 @@ const initilizeSocket = (server) => {
         }
     };
 
-
     const handleJoinApproved = (socket) => async ({ userId, roomId }) => {
 
         try {
             await Promise.all([
                 RoomService.addUserToApprovedList(roomId, userId),
-                roomService.removeUserFromRequestsList(roomId, userId)
+                RoomService.removeUserFromRequestsList(roomId, userId)
             ]);
-
-            // const userSocketId = Array.from(SocketUserMapping.entries()).find(([key, value]) => value.id === userId)?.[0];
             const userSocketId = UserIdSocketMapping.get(userId)
-            // console.log("userId->socketId", userId, "->", userSocketId);
+
             if (userSocketId) {
+                // maybe here is the bug
+                UserIdSocketMapping.delete(userId);
+                SocketUserMapping.delete(userSocketId);
+                // 
                 return io.to(userSocketId).emit(ACTIONS.JOIN_APPROVED, { roomId });
             }
 
@@ -213,12 +216,9 @@ const initilizeSocket = (server) => {
     };
 
     const handleJoinCancelled = (socket) => async ({ userId, roomId }) => {
-        // console.log("JOIN_CANCELLED", roomId, userId);
         try {
             await RoomService.removeUserFromRequestsList(roomId, userId);
-            // const userSocketId = Array.from(SocketUserMapping.entries()).find(([key, value]) => value.id === userId)?.[0];
             const userSocketId = UserIdSocketMapping.get(userId)
-            // console.log("userSocketId", userSocketId);
             if (userSocketId) {
                 return io.to(userSocketId).emit(ACTIONS.JOIN_CANCELLED, { roomId });
             }
@@ -227,6 +227,38 @@ const initilizeSocket = (server) => {
         } catch (error) {
             console.error('Error cancelling join request:', error);
             socket.emit('error', { message: 'Error cancelling join request' });
+        }
+    };
+
+    const handleCheckUserInRoom = (socket) => async ({ roomId, user }) => {
+        try {
+            const room = await RoomService.getRoom(roomId);
+            if (!room) {
+                return socket.emit(ACTIONS.ROOM_NOT_FOUND);
+            }
+            const userIdObj = new ObjectId(user.id);
+            if (room.roomType == "open") {
+                return socket.emit(ACTIONS.USER_ALREADY_IN_ROOM, { roomId, user });
+            }
+            if (room.roomType === 'social' &&
+                room.ownerId.toString() !== user.id &&
+                !room.approvedUsers.includes(userIdObj)
+            ) {
+                if (room?.joinRequests.includes(userIdObj)) {
+                    // room join request is still pending
+                    UserIdSocketMapping.set(user.id, socket.id);
+                    SocketUserMapping.set(socket.id, user);
+                    socket.emit(ACTIONS.JOIN_REQUEST_PENDING, { roomId, user });
+                } else {
+                    // not authorized to join this room
+                    socket.emit(ACTIONS.USER_NOT_ALLOWED, { roomId, user });
+                }
+                return;
+            }
+            socket.emit(ACTIONS.USER_ALREADY_IN_ROOM, { roomId, user });
+        } catch (error) {
+            console.error('Error checking user in room:', error);
+            socket.emit(ACTIONS.ERROR, { message: 'Error checking user in room' });
         }
     };
 
@@ -253,30 +285,25 @@ const initilizeSocket = (server) => {
                         userId: SocketUserMapping.get(socket.id)?.id,
                     });
                 });
-                // console.log("leaving room: roomId", roomId, "userId", userId, "socket.id", socket.id);
                 socket.leave(roomId);
             });
 
             if (roomId && userId) {
                 await RoomService.removeUserFromRoom(roomId, userId);
             }
-            // user id is null then find the id from the map
             if (userId) {
                 UserIdSocketMapping.delete(userId);
             }
             else {
-                // console.log("else in leave room func");
-                // SocketUserMapping.get(socket.id)?.id
                 const user = SocketUserMapping.get(socket.id)
-                // console.log("user->socketId", user, "->", socket.id);
                 if (user) {
-                    // console.log("removed userId->socketId", user.id, "->", socket.id);
                     UserIdSocketMapping.delete(user.id);
 
                 }
             }
-            // console.log("removed socketId->user", socket.id, "->", SocketUserMapping.get(socket.id));
-            SocketUserMapping.delete(socket.id);
+            if (SocketUserMapping.get(socket.id)) {
+                SocketUserMapping.delete(socket.id);
+            }
         } catch (error) {
             console.error('Error leaving room:', error);
             socket.emit('error', { message: 'Error leaving room' });
