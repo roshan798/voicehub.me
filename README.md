@@ -5,13 +5,15 @@ VoiceHub represents a unique web application tailored for real-time voice commun
 ## Features
 
 - **Voice Rooms:** Users can create voice rooms and invite others to join.
+  - **Open Rooms:** Open rooms can be joined by anyone without any restrictions.
+  - **Social Rooms:** Social rooms require users to request permission from the room owner before they can join.
 - **Real-time Voice Calls:** Participants in a voice room can engage in real-time voice conversations.
 - **User Authentication:** User authentication is implemented using email and phone OTP for secure access.
 - **WebRTC:** Real-time communication is facilitated using WebRTC technology for peer-to-peer audio streaming.
 - **Socket.IO:** Socket.IO is used for real-time bidirectional event-based communication between the client and server.
 - **Dockerized Application:** The application is containerized using Docker and Docker Compose for easy deployment and scalability.
 - **MongoDB Database:** MongoDB is used as the backend database for storing user data and room information.
-- **Live Deployment:** The application is live and accessible at [VoiceHub.me](https://www.voicehub.me).
+- **Live Deployment:** The application is deployed on aws and accessible at [VoiceHub.me](https://www.voicehub.me).
 
 ## Technologies Used
 
@@ -50,7 +52,11 @@ npm install
    - Copy the .env.dev to a `.env` file in the both frontend and the backend directories.
    - Add environment variables for MongoDB connection string, JWT secret, and other necessary configurations.
 
-5. Access the application in your browser at `http://localhost:5173`.
+5. Run both frontend and backend in separate terminals using the command:
+```bash
+npm run dev
+```
+Access the application in your browser at `http://localhost:5173`.
 
 ## Contributing
 
